@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.FileIoUtils;
 import utils.IOUtils;
+import webserver.http.RequestHeader;
 
 import java.io.*;
 import java.net.Socket;
@@ -30,9 +31,10 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader bufferReader = new BufferedReader(new InputStreamReader(in));
-            List<String> requestHeader = IOUtils.readRequestHeader(bufferReader);
+            RequestHeader requestHeader = new RequestHeader(IOUtils.readRequestHeader(bufferReader));
+
             byte[] responseBody = mapRequestToResponse(requestHeader);
-            String contentType = getContentType(requestHeader);
+            String contentType = getContentType(requestHeader.get("path"));
             DataOutputStream dos = new DataOutputStream(out);
             response200Header(dos, responseBody.length, contentType);
             responseBody(dos, responseBody);
@@ -42,9 +44,7 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private String getContentType(List<String> requestHeader) {
-        List<String> header = IOUtils.getMethodAndPath(requestHeader.get(0));
-        String path = header.get(1);
+    private String getContentType(String path) {
         Map<String, String> contentTypes = new HashMap<>() {{
             put("html", "text/html");
             put("css", "text/css");
@@ -55,18 +55,8 @@ public class RequestHandler implements Runnable {
         return contentTypes.getOrDefault(a[a.length > 0 ? (a.length) - 1 : 0], "text/plain");
     }
 
-    private static byte[] mapRequestToResponse(List<String> requestHeader) throws IOException, URISyntaxException {
-        List<String> header = IOUtils.getMethodAndPath(requestHeader.get(0));
-
-        String method = header.get(0);
-        String path = header.get(1);
-
-        byte[] responseBody = "Hello world".getBytes();
-
-        responseBody = mapMethod(method, path);
-
-
-        return responseBody;
+    private static byte[] mapRequestToResponse(RequestHeader requestHeader) throws IOException, URISyntaxException {
+        return mapMethod(requestHeader.get("method"), requestHeader.get("path"));
     }
 
     private static byte[] mapMethod(String method, String path) throws IOException, URISyntaxException {
