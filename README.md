@@ -15,9 +15,9 @@
 - [ ] RequestHandlerTest 테스트가 모두 통과하도록 구현한다.
 
 #### 기능 구현 목록
-- [ ] Request Header를 파싱한다.
-- [ ] 요청에 맞는 URL로 연결한다.
-- [ ] 파일 읽어 응답만들기
+- [x] Request Header를 파싱한다.
+- [x] 요청에 맞는 URL로 연결한다.
+- [x] 파일 읽어 응답만들기
 
 #### 2. CSS 지원하기
 - [ ] Stylesheet 파일을 지원하도록 구현하도록 한다.

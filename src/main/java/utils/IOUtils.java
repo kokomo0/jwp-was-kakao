@@ -1,7 +1,12 @@
 package utils;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class IOUtils {
     /**
@@ -16,5 +21,20 @@ public class IOUtils {
         char[] body = new char[contentLength];
         br.read(body, 0, contentLength);
         return String.copyValueOf(body);
+    }
+
+    public static List<String> readRequestHeader(BufferedReader br) throws IOException {
+        List<String> requestHeader = new ArrayList<>();
+        String line;
+        do {
+            line = br.readLine();
+            if (line == null) break;
+            requestHeader.add(line);
+        } while (!"".equals(line));
+        return requestHeader;
+    }
+
+    public static List<String> getMethodAndPath(String line) {
+        return Arrays.asList(line.split(" "));
     }
 }
