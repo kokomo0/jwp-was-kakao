@@ -29,9 +29,9 @@
 - [x] 회원가입할 때 생성한 User 객체를 DataBase.addUser() 메서드를 활용해 RAM 메모리에 저장한다.
 
 #### 구현 목록
-- [ ] 쿼리를 파싱한다.
-- [ ] User 객체를 만든다.
-- [ ] User 객체를 데이터베이스에 저장한다.
+- [x] 쿼리를 파싱한다.
+- [x] User 객체를 만든다.
+- [x] User 객체를 데이터베이스에 저장한다.
 
 #### 4. POST 방식으로 회원가입
 - [ ] http://localhost:8080/user/form.html 파일의 form 태그 method를 get에서 post로 수정한 후 회원가입 기능이 정상적으로 동작하도록 구현한다.

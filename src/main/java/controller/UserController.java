@@ -2,7 +2,9 @@ package controller;
 
 import db.DataBase;
 import model.User;
+import utils.ParsingUtils;
 
+import java.util.List;
 import java.util.Map;
 
 public class UserController implements Controller {
@@ -18,9 +20,16 @@ public class UserController implements Controller {
         return instance;
     }
 
-    public byte[] mapRoute(String path, Map<String, String> params) {
-        if (path.equals("create")) {
-            return create(params);
+    public byte[] mapRoute(String method, String path, Map<String, String> params) {
+        if(method.equals("GET")) {
+            if (path.equals("create")) {
+                return create(params);
+            }
+        }
+        if(method.equals("POST" )) {
+            if(path.equals("create")) {
+                return create(params);
+            }
         }
         return new byte[] {};
     }

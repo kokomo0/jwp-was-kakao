@@ -1,7 +1,8 @@
 package controller;
 
+import java.util.List;
 import java.util.Map;
 
 public interface Controller {
-    byte[] mapRoute(String path, Map<String, String> params);
+    byte[] mapRoute(String method, String path, Map<String, String> params);
 }

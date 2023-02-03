@@ -74,4 +74,22 @@ class RequestHandlerTest {
         assertThat(DataBase.findUserById("cu").getPassword()).isEqualTo("password");
     }
 
+    @Test
+    void createUserByPost() {
+        final String httpRequest = String.join("\r\n",
+                "POST /user/create HTTP/1.1\n" +
+                        "Host: localhost:8080\n" +
+                        "Connection: keep-alive\n" +
+                        "Content-Length: 59\n" +
+                        "Content-Type: application/x-www-form-urlencoded\n" +
+                        "Accept: */*\n" +
+                        "\n" +
+                        "userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com");
+        final var socket = new StubSocket(httpRequest);
+        final RequestHandler handler = new RequestHandler(socket);
+
+        handler.run();
+
+        assertThat(DataBase.findUserById("cu").getPassword()).isEqualTo("password");
+    }
 }

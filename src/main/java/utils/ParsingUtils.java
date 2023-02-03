@@ -20,9 +20,9 @@ public class ParsingUtils {
         return headers;
     }
 
-    public static Map<String, String> parseQueryString(String path) {
+    public static Map<String, String> parseQueryString(String query) {
         Map<String, String> params = new HashMap<>();
-        String query = path.split("\\?")[1];
+        //String query = path.split("\\?")[1];
 
         Arrays.stream(query.split("&")).forEach(param -> {
             String[] kv = param.split("=");
@@ -31,4 +31,5 @@ public class ParsingUtils {
 
         return params;
     }
+
 }

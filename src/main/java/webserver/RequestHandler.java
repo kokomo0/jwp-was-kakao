@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RequestHandler implements Runnable {
@@ -24,7 +25,7 @@ public class RequestHandler implements Runnable {
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
         controllers = new HashMap<>() {{
-           put("user", UserController.getInstance());
+            put("user", UserController.getInstance());
         }};
     }
 
@@ -35,11 +36,13 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
+
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader bufferReader = new BufferedReader(new InputStreamReader(in));
             RequestHeader requestHeader = new RequestHeader(IOUtils.readRequestHeader(bufferReader));
+            String requestBody = IOUtils.readData(bufferReader, Integer.parseInt(requestHeader.get("Content-Length")));
 
-            byte[] responseBody = mapRequestToResponse(requestHeader);
+            byte[] responseBody = mapRequestToResponse(requestHeader, requestBody);
             String contentType = getContentType(requestHeader.get("path"));
             DataOutputStream dos = new DataOutputStream(out);
             response200Header(dos, responseBody.length, contentType);
@@ -61,18 +64,10 @@ public class RequestHandler implements Runnable {
         return contentTypes.getOrDefault(a[a.length > 0 ? (a.length) - 1 : 0], "text/plain");
     }
 
-    private byte[] mapRequestToResponse(RequestHeader requestHeader) throws IOException, URISyntaxException {
-        return mapMethod(requestHeader.get("method"), requestHeader.get("path"));
-    }
+    private byte[] mapRequestToResponse(RequestHeader requestHeader, String requestBody) throws IOException, URISyntaxException {
+        String method = requestHeader.get("method");
+        String path = requestHeader.get("path");
 
-    private byte[] mapMethod(String method, String path) throws IOException, URISyntaxException {
-        if (method.equals("GET")) {
-            return mapGet(path);
-        }
-        throw new RuntimeException();
-    }
-
-    private byte[] mapGet(String path) throws IOException, URISyntaxException {
         try {
             if (path.endsWith("html")) {
                 return FileIoUtils.loadFileFromClasspath("templates" + path);
@@ -83,17 +78,56 @@ public class RequestHandler implements Runnable {
             return FileIoUtils.loadFileFromClasspath("static" + path);
         } catch (NullPointerException e) {
             String[] paths = path.split("/", 3);
-            String domain = paths[1];
-            Map<String, String> params = ParsingUtils.parseQueryString(path);
-            String subPath = paths[2].split("\\?")[0];
+            String domain = paths[1]; //user
+            String subPath = paths[2].split("\\?")[0]; //create
 
-            return controllers.get(domain).mapRoute(subPath, params);
+            Map<String, String> params;
+            if (requestHeader.get("Content-Type").equals("application/x-www-form-urlencoded")) {
+                params = ParsingUtils.parseQueryString(requestBody);
+            } else {
+
+                params = ParsingUtils.parseQueryString(path.split("\\?", 2)[1]);
+            }
+            return controllers.get(domain).mapRoute(method, subPath, params);
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             throw e;
         }
     }
 
+    //    private byte[] mapMethod(String method, String path) throws IOException, URISyntaxException {
+//
+//        if (method.equals("GET")) {
+//            return mapGet(path);
+//        }
+//
+//        throw new RuntimeException();
+//    }
+//
+//    private byte[] mapGet(String path) throws IOException, URISyntaxException {
+//        try {
+//            if (path.endsWith("html")) {
+//                return FileIoUtils.loadFileFromClasspath("templates" + path);
+//            }
+//            if (path.equals("/")) {
+//                return "Hello world".getBytes();
+//            }
+//            return FileIoUtils.loadFileFromClasspath("static" + path);
+//        } catch (NullPointerException e) {
+//            String[] paths = path.split("/", 3);
+//            String domain = paths[1];
+//            String subPath = paths[2].split("\\?")[0];
+//
+//
+//            Map<String, String> params = ParsingUtils.parseQueryString(path);
+//
+//            return controllers.get(domain).mapRoute(subPath, params, );
+//        } catch (IOException | URISyntaxException e) {
+//            e.printStackTrace();
+//            throw e;
+//        }
+//    }
+//
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
