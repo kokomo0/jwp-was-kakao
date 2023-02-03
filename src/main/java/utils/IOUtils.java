@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+import static utils.ParsingUtils.parseHeader;
+
 public class IOUtils {
     /**
      * @param BufferedReader는 Request Body를 시작하는 시점이어야
@@ -27,24 +29,5 @@ public class IOUtils {
             line = br.readLine();
         }
         return parseHeader(requestHeader);
-    }
-
-    public static List<String> getMethodAndPath(String line) {
-        return Arrays.asList(line.split(" "));
-    }
-
-    public static Map<String, String> parseHeader(List<String> rawHeader) {
-        Map<String, String> headers = new HashMap<>();
-        String[] startLine = rawHeader.get(0).split(" ");
-        headers.put("method", startLine[0]);
-        headers.put("path", startLine[1]);
-        headers.put("protocol version", startLine[2]);
-
-        for (String header : rawHeader.subList(1, rawHeader.size())) {
-            System.out.println(header);
-            String[] line = header.split(":", 2);
-            headers.put(line[0].trim(), line[1].trim());
-        }
-        return headers;
     }
 }
