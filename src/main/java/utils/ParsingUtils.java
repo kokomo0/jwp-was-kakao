@@ -1,23 +1,23 @@
 package utils;
 
+import webserver.http.Request;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ParsingUtils {
-    public static Map<String, String> parseHeader(List<String> rawHeader) {
-        Map<String, String> headers = new HashMap<>();
-        String[] startLine = rawHeader.get(0).split(" ");
-        headers.put("method", startLine[0]);
-        headers.put("path", startLine[1]);
-        headers.put("protocol version", startLine[2]);
+    public static Request parseHeader(List<String> rawHeader) {
+        String[] requestLine = rawHeader.get(0).split(" ");
 
-        rawHeader.subList(1,rawHeader.size()).stream().forEach(param -> {
+        Map<String, String> headers = new HashMap<>();
+        rawHeader.subList(1,rawHeader.size()).forEach(param -> {
             String[] kv = param.split(":", 2);
             headers.put(kv[0].trim(), kv[1].trim());
         });
-        return headers;
+
+        return new Request(requestLine[0], requestLine[1], requestLine[2], headers);
     }
 
     public static Map<String, String> parseQueryString(String query) {

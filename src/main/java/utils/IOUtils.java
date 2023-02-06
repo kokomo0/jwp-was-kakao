@@ -21,13 +21,13 @@ public class IOUtils {
         return String.copyValueOf(body);
     }
 
-    public static Map<String, String> readRequestHeader(BufferedReader br) throws IOException {
+    public static List<String> readRequestHeader(BufferedReader br) throws IOException {
         List<String> requestHeader = new ArrayList<>();
         String line = br.readLine();
         while (!"".equals(line) || line == null) {
             requestHeader.add(line);
             line = br.readLine();
         }
-        return parseHeader(requestHeader);
+        return requestHeader;
     }
 }

@@ -26,7 +26,7 @@ public class StaticController implements Controller {
 
     public Response mapRoute(Request request) throws IOException, URISyntaxException {
         try {
-            String path = request.get("path");
+            String path = request.getUri();
             ResponseBuilder responseBuilder = new ResponseBuilder();
             responseBuilder.httpStatus("200 OK")
                     .contentType(getContentType(path));

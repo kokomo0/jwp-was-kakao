@@ -11,19 +11,18 @@ import java.io.*;
 import java.net.Socket;
 import java.net.URISyntaxException;
 
+import static utils.ParsingUtils.parseHeader;
+
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
-    private DispatcherServlet dispatcherServlet = new DispatcherServlet();
+    private final Socket connection;
+    private final DispatcherServlet dispatcherServlet = new DispatcherServlet();
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
 
-    /**
-     * 요청을 가져와서 응답을 보내주는 역할만
-     */
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
@@ -31,16 +30,14 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader bufferReader = new BufferedReader(new InputStreamReader(in));
-            Request request = new Request(IOUtils.readRequestHeader(bufferReader), "");
+            Request request = parseHeader(IOUtils.readRequestHeader(bufferReader));
 
-            String requestBody = "";
             if (!"".equals(request.get("Content-Length"))) {
-                requestBody = IOUtils.readData(bufferReader, Integer.parseInt(request.get("Content-Length")));
+                request.setBody(IOUtils.readData(bufferReader, Integer.parseInt(request.get("Content-Length"))));
             }
-            request.setBody(requestBody);
 
             DataOutputStream dos = new DataOutputStream(out);
-            Response response = mapRequestToResponse(request, requestBody);
+            Response response = mapRequestToResponse(request);
 
 
             responseHeader(dos, response);
@@ -53,33 +50,9 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private Response mapRequestToResponse(Request request, String requestBody) throws Exception {
-        String method = request.get("method");
-        String path = request.get("path");
-
+    private Response mapRequestToResponse(Request request) throws Exception {
         Controller controller = dispatcherServlet.mapController(request);
         return controller.mapRoute(request);
-
-//        try {
-//            return controllers.get("static").mapRoute(method, path, null);
-//        } catch (NullPointerException e) {
-//            String[] paths = path.split("/", 3);
-//            String domain = paths[1]; //user
-//            String subPath = paths[2].split("\\?")[0]; //create
-//
-//            Map<String, String> params;
-//            if (request.get("Content-Type").equals("application/x-www-form-urlencoded")) {
-//                params = ParsingUtils.parseQueryString(requestBody);
-//            } else {
-//                params = ParsingUtils.parseQueryString(path.split("\\?", 2)[1]);
-//            }
-//            return controllers.get(domain).mapRoute(method, subPath, params);
-//        } catch (IOException | URISyntaxException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//
-//        }
-//        return null;
     }
 
     //    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {

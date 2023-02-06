@@ -6,10 +6,10 @@ import webserver.http.Request;
 import static utils.FileIoUtils.exists;
 
 public class DispatcherServlet {
-    private HandlerMapping handlerMapping = new HandlerMapping();
+    private final HandlerMapping handlerMapping = new HandlerMapping();
 
     public Controller mapController(Request request) {
-        String uri = request.get("path");
+        String uri = request.getUri();
         if(exists(uri)) {
             return handlerMapping.getController("static");
         }

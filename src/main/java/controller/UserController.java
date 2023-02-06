@@ -23,9 +23,9 @@ public class UserController implements Controller {
     }
 
     public Response mapRoute(Request request) {
-        String method = request.get("method");
+        String method = request.getMethod();
 
-        String[] paths = request.get("path").split("/", 3);
+        String[] paths = request.getUri().split("/", 3);
         String path = paths[2].split("\\?")[0]; //create
 
         Map<String, String> params;
