@@ -12,19 +12,16 @@ import java.util.Map;
 
 public class StaticController implements Controller {
 
-    private static StaticController instance;
+    private static StaticController instance = new StaticController();
 
     private StaticController() {
     }
 
     public static StaticController getInstance() {
-        if (instance == null) {
-            instance = new StaticController();
-        }
         return instance;
     }
 
-    public Response mapRoute(Request request) throws IOException, URISyntaxException {
+    public Response mapRoute(Request request) {
         try {
             String path = request.getUri();
             ResponseBuilder responseBuilder = new ResponseBuilder();
@@ -41,8 +38,8 @@ public class StaticController implements Controller {
             }
             byte[] body = FileIoUtils.loadFileFromClasspath("static" + path);
             return responseBuilder.contentType(path).contentLength(String.valueOf(body.length)).body(body).build();
-        } catch(IOException | URISyntaxException e) {
-            throw e;
+        } catch (IOException | URISyntaxException e) {
+            throw new IllegalArgumentException("잘못된 경로");
         }
     }
 

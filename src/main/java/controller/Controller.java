@@ -4,5 +4,5 @@ import webserver.http.Request;
 import webserver.http.Response;
 
 public interface Controller {
-    Response mapRoute(Request request) throws Exception;
+    Response mapRoute(Request request);
 }

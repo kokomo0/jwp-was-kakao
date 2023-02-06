@@ -1,6 +1,5 @@
 package webserver;
 
-import controller.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.IOUtils;
@@ -9,7 +8,6 @@ import webserver.http.Response;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.URISyntaxException;
 
 import static utils.ParsingUtils.parseHeader;
 
@@ -27,7 +25,6 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
-
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader bufferReader = new BufferedReader(new InputStreamReader(in));
             Request request = parseHeader(IOUtils.readRequestHeader(bufferReader));
@@ -43,28 +40,14 @@ public class RequestHandler implements Runnable {
             responseHeader(dos, response);
             responseBody(dos, response);
 
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage());
-        } catch (Exception e) {
-
         }
     }
 
-    private Response mapRequestToResponse(Request request) throws Exception {
-        Controller controller = dispatcherServlet.mapController(request);
-        return controller.mapRoute(request);
+    private Response mapRequestToResponse(Request request) {
+        return dispatcherServlet.process(request);
     }
-
-    //    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
-//        try {
-//            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-//            dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8 \r\n");
-//            dos.writeBytes("Content-Length: " + lengthOfBodyContent + " \r\n");
-//            dos.writeBytes("\r\n");
-//        } catch (IOException e) {
-//            logger.error(e.getMessage());
-//        }
-//    }
 
     private void responseHeader(DataOutputStream dos, Response response) {
         try {
@@ -82,6 +65,8 @@ public class RequestHandler implements Runnable {
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
+        } catch (NullPointerException e) {
+            //body 없음
         }
     }
 }
