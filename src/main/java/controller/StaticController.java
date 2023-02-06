@@ -1,6 +1,7 @@
 package controller;
 
 import utils.FileIoUtils;
+import webserver.http.Request;
 import webserver.http.Response;
 import webserver.http.ResponseBuilder;
 
@@ -22,8 +23,10 @@ public class StaticController implements Controller {
         }
         return instance;
     }
-    public Response mapRoute(String method, String path, Map<String, String> params) throws IOException, URISyntaxException {
+
+    public Response mapRoute(Request request) throws IOException, URISyntaxException {
         try {
+            String path = request.get("path");
             ResponseBuilder responseBuilder = new ResponseBuilder();
             responseBuilder.httpStatus("200 OK")
                     .contentType(getContentType(path));

@@ -2,6 +2,8 @@ package controller;
 
 import db.DataBase;
 import model.User;
+import utils.ParsingUtils;
+import webserver.http.Request;
 import webserver.http.Response;
 import webserver.http.ResponseBuilder;
 
@@ -20,14 +22,26 @@ public class UserController implements Controller {
         return instance;
     }
 
-    public Response mapRoute(String method, String path, Map<String, String> params) {
-        if(method.equals("GET")) {
+    public Response mapRoute(Request request) {
+        String method = request.get("method");
+
+        String[] paths = request.get("path").split("/", 3);
+        String path = paths[2].split("\\?")[0]; //create
+
+        Map<String, String> params;
+        if (request.get("Content-Type").equals("application/x-www-form-urlencoded")) {
+            params = ParsingUtils.parseQueryString(request.getBody());
+        } else {
+            params = ParsingUtils.parseQueryString(path.split("\\?", 2)[1]);
+        }
+
+        if (method.equals("GET")) {
             if (path.equals("create")) {
                 return create(params);
             }
         }
-        if(method.equals("POST" )) {
-            if(path.equals("create")) {
+        if (method.equals("POST")) {
+            if (path.equals("create")) {
                 return create(params);
             }
         }

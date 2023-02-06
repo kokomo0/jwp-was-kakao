@@ -58,7 +58,7 @@ public class RequestHandler implements Runnable {
         String path = request.get("path");
 
         Controller controller = dispatcherServlet.mapController(request);
-        return controller.mapRoute(method, path, null);
+        return controller.mapRoute(request);
 
 //        try {
 //            return controllers.get("static").mapRoute(method, path, null);
