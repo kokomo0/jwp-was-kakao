@@ -40,7 +40,11 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader bufferReader = new BufferedReader(new InputStreamReader(in));
             RequestHeader requestHeader = new RequestHeader(IOUtils.readRequestHeader(bufferReader));
-            String requestBody = IOUtils.readData(bufferReader, Integer.parseInt(requestHeader.get("Content-Length")));
+
+            String requestBody = "";
+            if (!"".equals(requestHeader.get("Content-Length"))) {
+                requestBody = IOUtils.readData(bufferReader, Integer.parseInt(requestHeader.get("Content-Length")));
+            }
 
             byte[] responseBody = mapRequestToResponse(requestHeader, requestBody);
             String contentType = getContentType(requestHeader.get("path"));
@@ -95,39 +99,6 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    //    private byte[] mapMethod(String method, String path) throws IOException, URISyntaxException {
-//
-//        if (method.equals("GET")) {
-//            return mapGet(path);
-//        }
-//
-//        throw new RuntimeException();
-//    }
-//
-//    private byte[] mapGet(String path) throws IOException, URISyntaxException {
-//        try {
-//            if (path.endsWith("html")) {
-//                return FileIoUtils.loadFileFromClasspath("templates" + path);
-//            }
-//            if (path.equals("/")) {
-//                return "Hello world".getBytes();
-//            }
-//            return FileIoUtils.loadFileFromClasspath("static" + path);
-//        } catch (NullPointerException e) {
-//            String[] paths = path.split("/", 3);
-//            String domain = paths[1];
-//            String subPath = paths[2].split("\\?")[0];
-//
-//
-//            Map<String, String> params = ParsingUtils.parseQueryString(path);
-//
-//            return controllers.get(domain).mapRoute(subPath, params, );
-//        } catch (IOException | URISyntaxException e) {
-//            e.printStackTrace();
-//            throw e;
-//        }
-//    }
-//
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
