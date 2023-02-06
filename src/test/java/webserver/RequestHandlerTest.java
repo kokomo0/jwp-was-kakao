@@ -8,6 +8,8 @@ import utils.FileIoUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,7 +91,10 @@ class RequestHandlerTest {
         final RequestHandler handler = new RequestHandler(socket);
 
         handler.run();
+        List<String> response = Arrays.asList(socket.output().split("\r\n"));
 
+        assertThat(response.get(0).equals("HTTP/1.1 302 Found"));
+        assertThat(response.stream().filter(s -> s.contains("Location")).findAny().get()).isEqualTo("Location: /index.html ");
         assertThat(DataBase.findUserById("cu").getPassword()).isEqualTo("password");
     }
 }

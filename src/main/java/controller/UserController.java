@@ -2,9 +2,9 @@ package controller;
 
 import db.DataBase;
 import model.User;
-import utils.ParsingUtils;
+import webserver.http.Response;
+import webserver.http.ResponseBuilder;
 
-import java.util.List;
 import java.util.Map;
 
 public class UserController implements Controller {
@@ -20,7 +20,7 @@ public class UserController implements Controller {
         return instance;
     }
 
-    public byte[] mapRoute(String method, String path, Map<String, String> params) {
+    public Response mapRoute(String method, String path, Map<String, String> params) {
         if(method.equals("GET")) {
             if (path.equals("create")) {
                 return create(params);
@@ -31,12 +31,12 @@ public class UserController implements Controller {
                 return create(params);
             }
         }
-        return new byte[] {};
+        return new ResponseBuilder().httpStatus("404 Not Found").build();
     }
 
-    public byte[] create(Map<String, String> params) {
+    public Response create(Map<String, String> params) {
         User newUser = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         DataBase.addUser(newUser);
-        return new byte[] {};
+        return new ResponseBuilder().httpStatus("302 Found").location("/index.html").build();
     }
 }
