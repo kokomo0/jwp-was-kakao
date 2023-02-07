@@ -4,6 +4,7 @@ import db.DataBase;
 import model.User;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 import webserver.http.ResponseBuilder;
 
 import java.util.Map;
@@ -27,12 +28,12 @@ public class UserController implements Controller {
         if (path.equals("/user/create")) {
             return create(params);
         }
-        return new ResponseBuilder().httpStatus("404 Not Found").build();
+        return new ResponseBuilder().httpStatus(HttpStatus.NOT_FOUND).build();
     }
 
     public HttpResponse create(Map<String, String> params) {
         User newUser = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         DataBase.addUser(newUser);
-        return new ResponseBuilder().httpStatus("302 Found").location("/index.html").build();
+        return new ResponseBuilder().httpStatus(HttpStatus.FOUND).location("/index.html").build();
     }
 }

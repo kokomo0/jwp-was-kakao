@@ -1,7 +1,8 @@
 package webserver.http;
 
 public class ResponseBuilder {
-    private String httpStatus;
+    private String httpVersion;
+    private HttpStatus httpStatus;
     private String contentType;
     private String contentLength;
     private String connection;
@@ -12,8 +13,13 @@ public class ResponseBuilder {
     public ResponseBuilder() {
     }
 
-    public ResponseBuilder httpStatus(String status) {
-        this.httpStatus = status;
+    public ResponseBuilder httpVersion(String httpVersion) {
+        this.httpVersion = httpVersion;
+        return this;
+    }
+
+    public ResponseBuilder httpStatus(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
         return this;
     }
 
@@ -43,7 +49,7 @@ public class ResponseBuilder {
     }
 
     public HttpResponse build() {
-        String statusLine = "HTTP/1.1 " + httpStatus;
+        String statusLine = httpVersion + " " + httpStatus.valueOf() + " " + httpStatus.getDescription();
         String headers = (contentType != null ? ("Content-Type: " + contentType + ";charset=utf-8" + " \r\n") : "")
                 + (contentLength != null ? ("Content-Length: " + contentLength + " \r\n") : "")
                 + (connection != null ? ("Connection: " + connection + " \r\n") : "")

@@ -3,6 +3,7 @@ package controller;
 import utils.FileIoUtils;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 import webserver.http.ResponseBuilder;
 
 import java.io.IOException;
@@ -25,7 +26,8 @@ public class StaticController implements Controller {
         try {
             String path = httpRequest.getUri();
             ResponseBuilder responseBuilder = new ResponseBuilder();
-            responseBuilder.httpStatus("200 OK")
+            responseBuilder.httpVersion(httpRequest.getHttpVersion())
+                    .httpStatus(HttpStatus.OK)
                     .contentType(getContentType(path));
 
             if (path.endsWith("html")) {
