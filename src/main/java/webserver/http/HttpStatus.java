@@ -3,7 +3,9 @@ package webserver.http;
 public enum HttpStatus {
     OK(200, "OK"),
     FOUND(302, "Found"),
-    NOT_FOUND(404, "NotFound")
+    BAD_REQUEST(400, "Bad Request"),
+    NOT_FOUND(404, "Not Found"),
+    INTERNET_SERVER_ERROR(500, "Internal Server Error")
     ;
     private final int value;
     private final String description;

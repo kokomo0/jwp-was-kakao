@@ -1,7 +1,7 @@
 package webserver;
 
 import controller.Controller;
-import controller.StaticController;
+import controller.ResourceController;
 import controller.UserController;
 
 import java.util.HashMap;
@@ -13,7 +13,7 @@ public class HandlerMapping {
     public HandlerMapping() {
         controllers = new HashMap<>() {{
             put("user", UserController.getInstance());
-            put("static", StaticController.getInstance());
+            put("resource", ResourceController.getInstance());
         }};
     }
 

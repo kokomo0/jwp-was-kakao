@@ -9,14 +9,14 @@ import webserver.http.ResponseBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class StaticController implements Controller {
+public class ResourceController implements Controller {
 
-    private static final StaticController instance = new StaticController();
+    private static final ResourceController instance = new ResourceController();
 
-    private StaticController() {
+    private ResourceController() {
     }
 
-    public static StaticController getInstance() {
+    public static ResourceController getInstance() {
         return instance;
     }
 
@@ -30,7 +30,15 @@ public class StaticController implements Controller {
                     .contentLength(String.valueOf(body.length))
                     .body(body)
                     .build();
-        } catch (IOException | URISyntaxException | NullPointerException e) {
+        } catch (IOException e) {
+            return new ResponseBuilder()
+                    .httpStatus(HttpStatus.INTERNET_SERVER_ERROR)
+                    .build();
+        } catch (URISyntaxException e) {
+            return new ResponseBuilder()
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        } catch (NullPointerException e) {
             return new ResponseBuilder()
                     .httpStatus(HttpStatus.NOT_FOUND)
                     .build();
