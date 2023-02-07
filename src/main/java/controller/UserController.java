@@ -1,7 +1,6 @@
 package controller;
 
-import db.DataBase;
-import model.User;
+import service.UserService;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
@@ -13,6 +12,7 @@ import static utils.ParsingUtils.parseParameter;
 
 public class UserController implements Controller {
     private static final UserController instance = new UserController();
+    private final UserService userService = UserService.getInstance();
 
     private UserController() {
     }
@@ -21,19 +21,20 @@ public class UserController implements Controller {
         return instance;
     }
 
-    public HttpResponse mapRoute(HttpRequest httpRequest) {
+    public HttpResponse handleRequest(HttpRequest httpRequest) {
         String path = httpRequest.getUri().split("\\?", 2)[0];
         Map<String, String> params = parseParameter(httpRequest);
 
         if (path.equals("/user/create")) {
-            return create(params);
+            userService.create(params);
+            return new ResponseBuilder()
+                    .httpVersion(httpRequest.getHttpVersion())
+                    .httpStatus(HttpStatus.FOUND)
+                    .location("/index.html")
+                    .build();
         }
-        return new ResponseBuilder().httpStatus(HttpStatus.NOT_FOUND).build();
-    }
-
-    public HttpResponse create(Map<String, String> params) {
-        User newUser = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        DataBase.addUser(newUser);
-        return new ResponseBuilder().httpStatus(HttpStatus.FOUND).location("/index.html").build();
+        return new ResponseBuilder()
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .build();
     }
 }

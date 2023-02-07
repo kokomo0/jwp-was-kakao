@@ -4,5 +4,5 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
 public interface Controller {
-    HttpResponse mapRoute(HttpRequest httpRequest);
+    HttpResponse handleRequest(HttpRequest httpRequest);
 }

@@ -8,8 +8,6 @@ import webserver.http.ResponseBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class StaticController implements Controller {
 
@@ -22,37 +20,20 @@ public class StaticController implements Controller {
         return instance;
     }
 
-    public HttpResponse mapRoute(HttpRequest httpRequest) {
+    public HttpResponse handleRequest(HttpRequest httpRequest) {
         try {
-            String path = httpRequest.getUri();
-            ResponseBuilder responseBuilder = new ResponseBuilder();
-            responseBuilder.httpVersion(httpRequest.getHttpVersion())
+            byte[] body = FileIoUtils.mapBody(httpRequest.getUri());
+            return new ResponseBuilder()
+                    .httpVersion(httpRequest.getHttpVersion())
                     .httpStatus(HttpStatus.OK)
-                    .contentType(getContentType(path));
-
-            if (path.endsWith("html")) {
-                byte[] body = FileIoUtils.loadFileFromClasspath("templates" + path);
-                return responseBuilder.contentType(getContentType(path)).contentLength(String.valueOf(body.length)).body(body).build();
-            }
-            if (path.equals("/")) {
-                byte[] body = "Hello world".getBytes();
-                return responseBuilder.contentLength(String.valueOf(body.length)).body(body).build();
-            }
-            byte[] body = FileIoUtils.loadFileFromClasspath("static" + path);
-            return responseBuilder.contentType(path).contentLength(String.valueOf(body.length)).body(body).build();
-        } catch (IOException | URISyntaxException e) {
-            throw new IllegalArgumentException("잘못된 경로");
+                    .contentType(FileIoUtils.getContentType(httpRequest.getUri()))
+                    .contentLength(String.valueOf(body.length))
+                    .body(body)
+                    .build();
+        } catch (IOException | URISyntaxException | NullPointerException e) {
+            return new ResponseBuilder()
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
         }
-    }
-
-    private String getContentType(String path) {
-        Map<String, String> contentTypes = new HashMap<>() {{
-            put("html", "text/html");
-            put("css", "text/css");
-            put("js", "text/javascript");
-            put("png", "image/png");
-        }};
-        String[] a = path.split("\\.");
-        return contentTypes.getOrDefault(a[a.length > 0 ? (a.length) - 1 : 0], "text/plain");
     }
 }

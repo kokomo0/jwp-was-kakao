@@ -45,7 +45,7 @@ public class RequestHandler implements Runnable {
     private HttpResponse process(HttpRequest httpRequest) {
         String uri = httpRequest.getUri();
         Controller controller = mapController(uri);
-        return controller.mapRoute(httpRequest);
+        return controller.handleRequest(httpRequest);
     }
 
 }
