@@ -8,16 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 public class ParsingUtils {
-    public static Request parseHeader(List<String> rawHeader) {
-        String[] requestLine = rawHeader.get(0).split(" ");
-
+    public static Map<String, String> parseHeader(List<String> rawHeader) {
         Map<String, String> headers = new HashMap<>();
         rawHeader.subList(1, rawHeader.size()).forEach(param -> {
             String[] kv = param.split(":", 2);
             headers.put(kv[0].trim(), kv[1].trim());
         });
 
-        return new Request(requestLine[0], requestLine[1], requestLine[2], headers);
+        return headers;
     }
 
     public static Map<String, String> parseQueryString(String query) {

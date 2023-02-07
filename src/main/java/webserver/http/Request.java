@@ -7,13 +7,14 @@ public class Request {
     private final String uri;
     private final String httpVersion;
     private final Map<String, String> headers;
-    private String body;
+    private final String body;
 
-    public Request(String method, String uri, String httpVersion, Map<String, String> headers) {
+    public Request(String method, String uri, String httpVersion, Map<String, String> headers, String body) {
         this.method = method;
         this.uri = uri;
         this.httpVersion = httpVersion;
         this.headers = headers;
+        this.body = body;
     }
 
     public String getMethod() {
@@ -32,9 +33,6 @@ public class Request {
         return headers.getOrDefault(key, "");
     }
 
-    public void setBody(String body) {
-        this.body = body;
-    }
     public String getBody() {
         return body;
     }
