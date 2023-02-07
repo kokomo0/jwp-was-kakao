@@ -42,13 +42,13 @@ public class ResponseBuilder {
         return this;
     }
 
-    public Response build() {
+    public HttpResponse build() {
         String statusLine = "HTTP/1.1 " + httpStatus;
         String headers = (contentType != null ? ("Content-Type: " + contentType + ";charset=utf-8" + " \r\n") : "")
                 + (contentLength != null ? ("Content-Length: " + contentLength + " \r\n") : "")
                 + (connection != null ? ("Connection: " + connection + " \r\n") : "")
                 + (location != null ? ("Location: " + location + " \r\n") : "");
 
-        return new Response(statusLine, headers, body);
+        return new HttpResponse(statusLine, headers, body);
     }
 }

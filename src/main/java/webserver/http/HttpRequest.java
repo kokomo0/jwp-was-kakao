@@ -2,14 +2,14 @@ package webserver.http;
 
 import java.util.Map;
 
-public class Request {
+public class HttpRequest {
     private final String method;
     private final String uri;
     private final String httpVersion;
     private final Map<String, String> headers;
     private final String body;
 
-    public Request(String method, String uri, String httpVersion, Map<String, String> headers, String body) {
+    public HttpRequest(String method, String uri, String httpVersion, Map<String, String> headers, String body) {
         this.method = method;
         this.uri = uri;
         this.httpVersion = httpVersion;

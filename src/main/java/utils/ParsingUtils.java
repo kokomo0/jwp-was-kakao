@@ -1,6 +1,6 @@
 package utils;
 
-import webserver.http.Request;
+import webserver.http.HttpRequest;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,10 +28,10 @@ public class ParsingUtils {
         return params;
     }
 
-    public static Map<String, String> parseParameter(Request request) {
-        if (request.get("Content-Type").equals("application/x-www-form-urlencoded"))
-            return parseQueryString(request.getBody());
-        return parseQueryString(request.getUri().split("\\?", 2)[1]);
+    public static Map<String, String> parseParameter(HttpRequest httpRequest) {
+        if (httpRequest.get("Content-Type").equals("application/x-www-form-urlencoded"))
+            return parseQueryString(httpRequest.getBody());
+        return parseQueryString(httpRequest.getUri().split("\\?", 2)[1]);
     }
 
 }

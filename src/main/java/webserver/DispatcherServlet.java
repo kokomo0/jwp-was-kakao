@@ -1,8 +1,8 @@
 package webserver;
 
 import controller.Controller;
-import webserver.http.Request;
-import webserver.http.Response;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 
 import static utils.FileIoUtils.exists;
 
@@ -16,9 +16,9 @@ public class DispatcherServlet {
         return handlerMapping.getController("user");
     }
 
-    public Response process(Request request) {
-        String uri = request.getUri();
+    public HttpResponse process(HttpRequest httpRequest) {
+        String uri = httpRequest.getUri();
         Controller controller = mapController(uri);
-        return controller.mapRoute(request);
+        return controller.mapRoute(httpRequest);
     }
 }

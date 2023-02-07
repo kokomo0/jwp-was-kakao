@@ -1,8 +1,8 @@
 package controller;
 
-import webserver.http.Request;
-import webserver.http.Response;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 
 public interface Controller {
-    Response mapRoute(Request request);
+    HttpResponse mapRoute(HttpRequest httpRequest);
 }

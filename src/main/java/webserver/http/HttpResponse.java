@@ -1,11 +1,11 @@
 package webserver.http;
 
-public class Response {
-    private String statusLine;
-    private String headers;
-    private byte[] body;
+public class HttpResponse {
+    private final String statusLine;
+    private final String headers;
+    private final byte[] body;
 
-    public Response(String statusLine, String headers, byte[] body) {
+    public HttpResponse(String statusLine, String headers, byte[] body) {
         this.statusLine = statusLine;
         this.headers = headers;
         this.body = body;

@@ -1,8 +1,8 @@
 package controller;
 
 import utils.FileIoUtils;
-import webserver.http.Request;
-import webserver.http.Response;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 import webserver.http.ResponseBuilder;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class StaticController implements Controller {
 
-    private static StaticController instance = new StaticController();
+    private static final StaticController instance = new StaticController();
 
     private StaticController() {
     }
@@ -21,9 +21,9 @@ public class StaticController implements Controller {
         return instance;
     }
 
-    public Response mapRoute(Request request) {
+    public HttpResponse mapRoute(HttpRequest httpRequest) {
         try {
-            String path = request.getUri();
+            String path = httpRequest.getUri();
             ResponseBuilder responseBuilder = new ResponseBuilder();
             responseBuilder.httpStatus("200 OK")
                     .contentType(getContentType(path));
