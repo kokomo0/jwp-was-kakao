@@ -2,10 +2,7 @@ package controller;
 
 import db.DataBase;
 import service.LoginService;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
-import webserver.http.HttpStatus;
-import webserver.http.ResponseBuilder;
+import webserver.http.*;
 
 import java.util.Map;
 
@@ -23,6 +20,9 @@ public class LoginController implements Controller {
     }
 
     public HttpResponse handleRequest(HttpRequest httpRequest) {
+        if(!"".equals(httpRequest.get("Cookie")) && httpRequest.get("Cookie").contains("JSESSIONID")) {
+            return loginByCookie(httpRequest);
+        }
         Map<String, String> params = parseQueryString(httpRequest.getBody());
         if (!DataBase.findUserById(params.get("userId")).getPassword().equals(params.get("password"))) {
             return new ResponseBuilder()
@@ -31,6 +31,16 @@ public class LoginController implements Controller {
                     .location("/user/login_failed.html")
                     .build();
         }
+        return new ResponseBuilder()
+                .httpVersion(httpRequest.getHttpVersion())
+                .httpStatus(HttpStatus.FOUND)
+                .location("/index.html")
+                .cookie(new Cookie())
+                .build();
+    }
+
+    private HttpResponse loginByCookie(HttpRequest httpRequest) {
+        Cookie cookie = new Cookie(httpRequest.get("Cookie"));
         return new ResponseBuilder()
                 .httpVersion(httpRequest.getHttpVersion())
                 .httpStatus(HttpStatus.FOUND)
