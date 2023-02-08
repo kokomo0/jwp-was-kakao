@@ -39,7 +39,9 @@ public class RequestHandler implements Runnable {
         if (exists(uri)) {
             return handlerMapping.getController("resource");
         }
-        return handlerMapping.getController("user");
+        if(uri.startsWith("/user/create"))
+            return handlerMapping.getController("user");
+        return handlerMapping.getController("login");
     }
 
     private HttpResponse process(HttpRequest httpRequest) {
