@@ -1,7 +1,7 @@
 package controller;
 
 import controller.annotation.RequestMapping;
-import controller.support.Parameter;
+import support.Parameter;
 import service.UserService;
 import webserver.session.SessionManager;
 import utils.FileIoUtils;

@@ -1,4 +1,4 @@
-package controller.support;
+package support;
 
 import controller.*;
 import controller.annotation.RequestMapping;

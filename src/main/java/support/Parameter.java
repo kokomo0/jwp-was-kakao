@@ -1,4 +1,4 @@
-package controller.support;
+package support;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package controller.support;
+package support;
 
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;

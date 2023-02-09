@@ -1,7 +1,7 @@
 package controller;
 
 import controller.annotation.RequestMapping;
-import controller.support.Parameter;
+import support.Parameter;
 import utils.FileIoUtils;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
