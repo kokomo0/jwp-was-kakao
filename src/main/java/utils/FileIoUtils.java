@@ -29,9 +29,6 @@ public class FileIoUtils {
     }
 
     public static byte[] mapBody(String path) throws IOException, URISyntaxException {
-        if (path.equals("/")) {
-            return "Hello world".getBytes();
-        }
         if (path.endsWith("html")) {
             return FileIoUtils.loadFileFromClasspath("templates" + path);
         }

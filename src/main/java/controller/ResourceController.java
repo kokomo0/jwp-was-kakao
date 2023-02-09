@@ -21,7 +21,7 @@ public class ResourceController implements Controller {
     }
 
     @RequestMapping
-    public HttpResponse viewPage(String uri) throws IOException, URISyntaxException, NullPointerException {
+    public HttpResponse viewPage(String uri) throws IOException, URISyntaxException {
         //TODO: CONTENT-TYPE 정리
         byte[] body = FileIoUtils.mapBody(uri);
         return new ResponseBuilder()

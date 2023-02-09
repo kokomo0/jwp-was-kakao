@@ -3,7 +3,6 @@ package controller;
 import controller.annotation.RequestMapping;
 import controller.support.Parameter;
 import service.UserService;
-import webserver.session.Session;
 import webserver.session.SessionManager;
 import utils.FileIoUtils;
 import webserver.http.*;
@@ -27,8 +26,7 @@ public class LoginController implements Controller {
 
     @RequestMapping(path = "/user/login", method = "POST")
     public HttpResponse signIn(Parameter parameter) {
-        if (!userService.isExistingUser(parameter.get("userId")) ||
-                !userService.isValidPassword(parameter.get("userId"), parameter.get("password"))) {
+        if (!valid(parameter.get("userId"), parameter.get("password"))) {
             return new ResponseBuilder()
                     .redirect("/user/login_failed.html")
                     .build();
@@ -43,8 +41,8 @@ public class LoginController implements Controller {
     }
 
     @RequestMapping(path = "/user/login", method = "GET")
-    public HttpResponse accessLoginPage(Parameter parameter) throws IOException, URISyntaxException, NullPointerException {
-        if (parameter == null || "".equals(parameter.get("JSESSIONID"))) {
+    public HttpResponse accessLoginPage(Parameter parameter) throws IOException, URISyntaxException {
+        if (!isLoginUser(parameter.sessionId())) {
             byte[] body = FileIoUtils.mapBody(parameter.get("uri"));
             return new ResponseBuilder()
                     .httpStatus(HttpStatus.OK)
@@ -55,17 +53,10 @@ public class LoginController implements Controller {
         return new ResponseBuilder()
                 .redirect("/index.html")
                 .build();
-
     }
 
-
-    private boolean isLoginUser(HttpRequest request) {
-        if (!request.hasCookie())
-            return false;
-        Cookie cookie = Cookie.parseCookie(request.get("Cookie"));
-        String sessionId = Cookie.parseCookie(request.get("Cookie")).get("JSESSIONID");
-        Session session = SessionManager.getInstance().findSession(sessionId);
-        return session != null && (boolean) session.getAttribute("logined");
+    private boolean valid(String userId, String password) {
+        return userService.isExistingUser(userId) &&
+                userService.isValidPassword(userId, password);
     }
-
 }

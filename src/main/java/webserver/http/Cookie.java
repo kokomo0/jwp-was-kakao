@@ -3,11 +3,10 @@ package webserver.http;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class Cookie {
 
-    private Map<String, String> cookies;
+    private final Map<String, String> cookies;
 
     private Cookie(Map<String, String> cookies) {
         this.cookies = cookies;
@@ -20,11 +19,6 @@ public class Cookie {
         cookies.put("Max-Age", "60");
         return new Cookie(cookies);
     }
-
-
-//    public Cookie(String cookieString) {
-//        parseAndSetCookie(cookieString);
-//    }
 
     public static Cookie parseCookie(String query) {
         Map<String, String> cookies = new HashMap<>();

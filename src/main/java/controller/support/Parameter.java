@@ -23,8 +23,11 @@ public class Parameter {
     public void add(Map<String, String> extraParameter) {
         parameter.putAll(extraParameter);
     }
-
     public void add(String key, String value) {
         parameter.put(key, value);
+    }
+
+    public String sessionId() {
+        return parameter.get("JSESSIONID");
     }
 }

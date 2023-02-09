@@ -13,7 +13,7 @@ public class HandlerMapping {
 
     public HandlerMapping() {
         controllers = new HashMap<>() {{
-            put("user", UserController.getInstance());
+            put("create", UserCreateController.getInstance());
             put("resource", ResourceController.getInstance());
             put("login", LoginController.getInstance());
             put("list", UserListController.getInstance());
@@ -24,7 +24,7 @@ public class HandlerMapping {
     public Controller map(HttpRequest httpRequest) {
         String uri = httpRequest.getUri();
         if (uri.startsWith("/user/create"))
-            return controllers.get("user");
+            return controllers.get("create");
         if (uri.startsWith("/user/login"))
             return controllers.get("login");
         if (uri.startsWith("/user/list"))

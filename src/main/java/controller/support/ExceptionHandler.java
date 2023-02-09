@@ -20,9 +20,6 @@ public class ExceptionHandler {
         if (e.equals(URISyntaxException.class)) {
             return new ResponseBuilder().httpStatus(HttpStatus.BAD_REQUEST).build();
         }
-        if (e.equals(NullPointerException.class)) {
-            return new ResponseBuilder().httpStatus(HttpStatus.NOT_FOUND).build();
-        }
         if (e.equals(InvocationTargetException.class)) {
             return new ResponseBuilder().httpStatus(HttpStatus.INTERNET_SERVER_ERROR).build();
         }

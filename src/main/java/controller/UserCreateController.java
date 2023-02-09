@@ -5,18 +5,18 @@ import model.User;
 import service.UserService;
 import webserver.http.*;
 
-public class UserController implements Controller {
+public class UserCreateController implements Controller {
     private final UserService userService = UserService.getInstance();
 
-    private UserController() {
+    private UserCreateController() {
     }
 
-    public static UserController getInstance() {
-        return UserController.LazyHolder.it;
+    public static UserCreateController getInstance() {
+        return UserCreateController.LazyHolder.it;
     }
 
     private static class LazyHolder {
-        private static final UserController it = new UserController();
+        private static final UserCreateController it = new UserCreateController();
     }
 
     @RequestMapping(path = "/user/create", method = "POST")

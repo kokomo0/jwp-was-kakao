@@ -24,7 +24,7 @@ public class UserListController implements Controller {
 
     @RequestMapping(path = "/user/list", method = "GET")
     public HttpResponse showUserList(Parameter parameter) throws IOException, URISyntaxException {
-        if (parameter == null || "".equals(parameter.get("JSESSIONID"))) {
+        if (!isLoginUser(parameter.sessionId())) {
             return new ResponseBuilder()
                     .redirect("/user/login.html")
                     .build();

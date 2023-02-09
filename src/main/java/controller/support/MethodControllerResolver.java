@@ -51,12 +51,11 @@ public class MethodControllerResolver {
     private HttpResponse invoke(Controller controller, Method method, HttpRequest httpRequest) throws InvocationTargetException, IllegalAccessException {
         if (controller.equals(HomeController.getInstance()))
             return (HttpResponse) method.invoke(controller);
-        //TODO: 파라미터 정리
 
         if (controller.equals(ResourceController.getInstance()))
             return (HttpResponse) method.invoke(controller, httpRequest.getUri());
 
-        if (controller.equals(UserController.getInstance())) {
+        if (controller.equals(UserCreateController.getInstance())) {
             Parameter params = ParameterWrapper.wrap(httpRequest);
             User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
             return (HttpResponse) method.invoke(controller, user);

@@ -1,4 +1,4 @@
-package session;
+package webserver.session;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,11 +17,11 @@ public class SessionManager {
 
     public String createSession() {
         String sessionId = UUID.randomUUID().toString();
-        add(new Session(sessionId));
+        addSession(new Session(sessionId));
         return sessionId;
     }
 
-    public void add(final Session session) {
+    public void addSession(final Session session) {
         sessions.put(session.getId(), session);
     }
 
@@ -29,7 +29,7 @@ public class SessionManager {
         return sessions.getOrDefault(id, null);
     }
 
-    public void remove(final String id) {
+    public void removeSession(final String id) {
         sessions.remove(id);
     }
 
