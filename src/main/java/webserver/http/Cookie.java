@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class Cookie {
 
+    public static final String SESSION_ID = "JSESSIONID";
     private final Map<String, String> cookies;
 
     private Cookie(Map<String, String> cookies) {
@@ -14,7 +15,7 @@ public class Cookie {
 
     public static Cookie setCookie(String uuid) {
         Map<String, String> cookies = new HashMap<>();
-        cookies.put("JSESSIONID", uuid);
+        cookies.put(SESSION_ID, uuid);
         cookies.put("Path", "/");
         cookies.put("Max-Age", "60");
         return new Cookie(cookies);

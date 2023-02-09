@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static webserver.http.Cookie.SESSION_ID;
+
 public class Parameter {
     private Map<String, String> parameter = new HashMap<>();
 
@@ -28,6 +30,6 @@ public class Parameter {
     }
 
     public String sessionId() {
-        return parameter.get("JSESSIONID");
+        return parameter.get(SESSION_ID);
     }
 }

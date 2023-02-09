@@ -1,8 +1,8 @@
 package controller;
 
 import controller.annotation.RequestMapping;
-import model.User;
 import service.UserService;
+import support.Parameter;
 import webserver.http.*;
 
 public class UserCreateController implements Controller {
@@ -20,16 +20,16 @@ public class UserCreateController implements Controller {
     }
 
     @RequestMapping(path = "/user/create", method = "POST")
-    public HttpResponse createUserByPost(User user) {
-        userService.add(user);
+    public HttpResponse createUserByPost(Parameter parameter) {
+        userService.createUser(parameter);
         return new ResponseBuilder()
                 .redirect("/index.html")
                 .build();
     }
 
     @RequestMapping(path = "/user/create", method = "GET")
-    public HttpResponse createUserByGet(User user) {
-        userService.add(user);
+    public HttpResponse createUserByGet(Parameter parameter) {
+        userService.createUser(parameter);
         return new ResponseBuilder()
                 .redirect("/index.html")
                 .build();

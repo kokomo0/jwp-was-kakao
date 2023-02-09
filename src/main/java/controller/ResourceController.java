@@ -1,6 +1,7 @@
 package controller;
 
 import controller.annotation.RequestMapping;
+import support.Parameter;
 import utils.FileIoUtils;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
@@ -21,12 +22,12 @@ public class ResourceController implements Controller {
     }
 
     @RequestMapping
-    public HttpResponse viewPage(String uri) throws IOException, URISyntaxException {
+    public HttpResponse viewPage(Parameter parameter) throws IOException, URISyntaxException {
         //TODO: CONTENT-TYPE 정리
-        byte[] body = FileIoUtils.mapBody(uri);
+        byte[] body = FileIoUtils.mapBody(parameter.get("uri"));
         return new ResponseBuilder()
                 .httpStatus(HttpStatus.OK)
-                .contentType(FileIoUtils.getContentType(uri))
+                .contentType(FileIoUtils.getContentType(parameter.get("uri")))
                 .body(body)
                 .build();
     }

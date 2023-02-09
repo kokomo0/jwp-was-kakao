@@ -2,7 +2,6 @@ package support;
 
 import controller.*;
 import controller.annotation.RequestMapping;
-import model.User;
 import utils.FileIoUtils;
 import webserver.http.*;
 
@@ -10,6 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+
+import static webserver.http.Cookie.SESSION_ID;
 
 public class MethodControllerResolver {
     public HttpResponse process(Controller controller, HttpRequest httpRequest) {
@@ -52,29 +53,11 @@ public class MethodControllerResolver {
         if (controller.equals(HomeController.getInstance()))
             return (HttpResponse) method.invoke(controller);
 
-        if (controller.equals(ResourceController.getInstance()))
-            return (HttpResponse) method.invoke(controller, httpRequest.getUri());
+        Parameter parameter = ParameterWrapper.wrap(httpRequest);
+        parameter.add("uri", httpRequest.getUri());
+        if (httpRequest.hasCookie())
+            parameter.add(SESSION_ID, Cookie.parseCookie(httpRequest.get("Cookie")).get(SESSION_ID));
 
-        if (controller.equals(UserCreateController.getInstance())) {
-            Parameter params = ParameterWrapper.wrap(httpRequest);
-            User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-            return (HttpResponse) method.invoke(controller, user);
-        }
-        if (controller.equals(LoginController.getInstance())) {
-            Parameter params = ParameterWrapper.wrap(httpRequest);
-            params.add("uri", httpRequest.getUri());
-            if (httpRequest.hasCookie())
-                params.add("JSESSIONID", Cookie.parseCookie(httpRequest.get("Cookie")).get("JSESSIONID"));
-            return (HttpResponse) method.invoke(controller, params);
-        }
-        if (controller.equals(UserListController.getInstance())) {
-            Parameter params = new Parameter();
-            params.add("uri", httpRequest.getUri());
-            if (httpRequest.hasCookie())
-                params.add("JSESSIONID", Cookie.parseCookie(httpRequest.get("Cookie")).get("JSESSIONID"));
-            return (HttpResponse) method.invoke(controller, params);
-        }
-        return new ResponseBuilder().httpStatus(HttpStatus.OK).build();
+        return (HttpResponse) method.invoke(controller, parameter);
     }
-
 }

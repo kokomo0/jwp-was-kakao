@@ -2,9 +2,9 @@ package service;
 
 import db.DataBase;
 import model.User;
+import support.Parameter;
 
 import java.util.Collection;
-import java.util.Map;
 
 public class UserService {
     private static final UserService instance = new UserService();
@@ -16,13 +16,13 @@ public class UserService {
         return instance;
     }
 
-    public User create(Map<String, String> params) {
+    public User createUser(Parameter params) {
         User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        DataBase.addUser(user);
+        addUser(user);
         return user;
     }
 
-    public void add(User user) {
+    public void addUser(User user) {
         DataBase.addUser(user);
     }
 
