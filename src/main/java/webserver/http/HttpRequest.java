@@ -11,10 +11,10 @@ public class HttpRequest {
 
     public HttpRequest(String method, String uri, String httpVersion, Map<String, String> headers, String body) {
         this.method = method;
-        this.uri = hasQueryString(uri) ? uri.split("\\?")[0] : uri;
+        this.uri = uri;
         this.httpVersion = httpVersion;
         this.headers = headers;
-        this.body = hasQueryString(uri) ? uri.split("\\?")[1] : body;
+        this.body = body;
     }
 
     public String getMethod() {
@@ -37,7 +37,7 @@ public class HttpRequest {
         return body;
     }
 
-    private boolean hasQueryString(String uri) {
-        return uri.contains("?");
+    public boolean hasCookie() {
+        return !"".equals(get("Cookie"));
     }
 }

@@ -1,9 +1,6 @@
-package controller.resolver;
+package controller.support;
 
-import controller.Controller;
-import controller.HomeController;
-import controller.ResourceController;
-import controller.UserController;
+import controller.*;
 import controller.annotation.RequestMapping;
 import model.User;
 import utils.FileIoUtils;
@@ -12,9 +9,7 @@ import webserver.http.HttpResponse;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Map;
 
-import static utils.ParsingUtils.parseParameter;
 import static utils.ParsingUtils.parseQueryString;
 
 public class MethodControllerResolver {
@@ -36,7 +31,7 @@ public class MethodControllerResolver {
     private boolean support(RequestMapping requestMapping, HttpRequest httpRequest) {
         if(isResourceRequest(httpRequest)) return true;
         return requestMapping.method().equals(httpRequest.getMethod()) &&
-                requestMapping.path().equals(httpRequest.getUri());
+                requestMapping.path().equals(httpRequest.getUri().split("\\?")[0]);
     }
 
     private boolean isResourceRequest(HttpRequest httpRequest) {
@@ -54,9 +49,13 @@ public class MethodControllerResolver {
 
             if (controller.equals(UserController.getInstance())) {
                 //TODO: 파싱 로직 이동할 것
-                Map<String, String> params = parseQueryString(httpRequest.getBody());
+                Parameter params = ParameterWrapper.wrap(httpRequest);
                 User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
                 return (HttpResponse) method.invoke(controller, user);
+            }
+            if (controller.equals(LoginController.getInstance())) {
+                Parameter params = ParameterWrapper.wrap(httpRequest);
+                return (HttpResponse) method.invoke(controller, params);
             }
         } catch (Exception e) {
         }
