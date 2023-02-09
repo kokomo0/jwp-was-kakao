@@ -1,9 +1,6 @@
 package webserver;
 
-import controller.Controller;
-import controller.ResourceController;
-import controller.UserController;
-import controller.LoginController;
+import controller.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +13,7 @@ public class HandlerMapping {
             put("user", UserController.getInstance());
             put("resource", ResourceController.getInstance());
             put("login", LoginController.getInstance());
+            put("list", UserListController.getInstance());
         }};
     }
 

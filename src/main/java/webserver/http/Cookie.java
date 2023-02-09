@@ -12,6 +12,8 @@ public class Cookie {
     public Cookie() {
         cookies.put("JSESSIONID", UUID.randomUUID().toString());
         cookies.put("Path", "/");
+        cookies.put("Max-Age", "60");
+        cookies.put("logined", "true");
     }
 
     public Cookie(String cookieString) {

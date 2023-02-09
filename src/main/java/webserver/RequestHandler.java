@@ -36,10 +36,13 @@ public class RequestHandler implements Runnable {
     }
 
     private Controller mapController(String uri) {
+        if (uri.equals("/user/list")) {
+            return handlerMapping.getController("list");
+        }
         if (exists(uri)) {
             return handlerMapping.getController("resource");
         }
-        if(uri.startsWith("/user/create"))
+        if (uri.startsWith("/user/create"))
             return handlerMapping.getController("user");
         return handlerMapping.getController("login");
     }
