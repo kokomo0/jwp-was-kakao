@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static utils.ParsingUtils.parseParameter;
+import static utils.ParsingUtils.parseQueryString;
 
 public class MethodControllerResolver {
     public HttpResponse process(Controller controller, HttpRequest httpRequest) {
@@ -53,7 +54,7 @@ public class MethodControllerResolver {
 
             if (controller.equals(UserController.getInstance())) {
                 //TODO: 파싱 로직 이동할 것
-                Map<String, String> params = parseParameter(httpRequest);
+                Map<String, String> params = parseQueryString(httpRequest.getBody());
                 User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
                 return (HttpResponse) method.invoke(controller, user);
             }

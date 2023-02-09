@@ -11,10 +11,10 @@ public class HttpRequest {
 
     public HttpRequest(String method, String uri, String httpVersion, Map<String, String> headers, String body) {
         this.method = method;
-        this.uri = uri;
+        this.uri = hasQueryString(uri) ? uri.split("\\?")[0] : uri;
         this.httpVersion = httpVersion;
         this.headers = headers;
-        this.body = body;
+        this.body = hasQueryString(uri) ? uri.split("\\?")[1] : body;
     }
 
     public String getMethod() {
@@ -35,5 +35,9 @@ public class HttpRequest {
 
     public String getBody() {
         return body;
+    }
+
+    private boolean hasQueryString(String uri) {
+        return uri.contains("?");
     }
 }
