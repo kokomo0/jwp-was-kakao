@@ -26,11 +26,4 @@ public class HomeController implements Controller {
                 .build();
     }
 
-    public HttpResponse badRequest() {
-        //TODO: 예외 따로 처리하기
-        return new ResponseBuilder()
-                .httpStatus(HttpStatus.BAD_REQUEST)
-                .build();
-    }
-
 }

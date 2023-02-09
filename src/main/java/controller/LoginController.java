@@ -2,27 +2,27 @@ package controller;
 
 import controller.annotation.RequestMapping;
 import controller.support.Parameter;
-import db.DataBase;
-import service.LoginService;
 import service.UserService;
-import session.Session;
-import session.SessionManager;
+import webserver.session.Session;
+import webserver.session.SessionManager;
 import utils.FileIoUtils;
 import webserver.http.*;
 
-import java.util.Map;
-
-import static utils.ParsingUtils.parseQueryString;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class LoginController implements Controller {
-    private final static LoginController instance = new LoginController();
     private final UserService userService = UserService.getInstance();
 
     private LoginController() {
     }
 
     public static LoginController getInstance() {
-        return instance;
+        return LazyHolder.it;
+    }
+
+    private static class LazyHolder {
+        private static final LoginController it = new LoginController();
     }
 
     @RequestMapping(path = "/user/login", method = "POST")
@@ -43,18 +43,14 @@ public class LoginController implements Controller {
     }
 
     @RequestMapping(path = "/user/login", method = "GET")
-    public HttpResponse accessLoginPage(Parameter parameter) {
-        if(parameter == null || "".equals(parameter.get("JSESSIONID"))) {
-            try {
-                byte[] body = FileIoUtils.mapBody(parameter.get("uri"));
-                return new ResponseBuilder()
-                        .httpStatus(HttpStatus.OK)
-                        .contentType(FileIoUtils.getContentType(parameter.get("uri")))
-                        .body(body)
-                        .build();
-            } catch (Exception e) {
-                return new ResponseBuilder().httpStatus(HttpStatus.INTERNET_SERVER_ERROR).build();
-            }
+    public HttpResponse accessLoginPage(Parameter parameter) throws IOException, URISyntaxException, NullPointerException {
+        if (parameter == null || "".equals(parameter.get("JSESSIONID"))) {
+            byte[] body = FileIoUtils.mapBody(parameter.get("uri"));
+            return new ResponseBuilder()
+                    .httpStatus(HttpStatus.OK)
+                    .contentType(FileIoUtils.getContentType(parameter.get("uri")))
+                    .body(body)
+                    .build();
         }
         return new ResponseBuilder()
                 .redirect("/index.html")
@@ -71,34 +67,5 @@ public class LoginController implements Controller {
         Session session = SessionManager.getInstance().findSession(sessionId);
         return session != null && (boolean) session.getAttribute("logined");
     }
-//
-//    public HttpResponse handleRequest(HttpRequest httpRequest) {
-//        if (!"".equals(httpRequest.get("Cookie")) && httpRequest.get("Cookie").contains("JSESSIONID")) {
-//            return loginByCookie(httpRequest);
-//        }
-//        Map<String, String> params = parseQueryString(httpRequest.getBody());
-//        if (!DataBase.findUserById(params.get("userId")).getPassword().equals(params.get("password"))) {
-//            return new ResponseBuilder()
-//                    .httpVersion(httpRequest.getHttpVersion())
-//                    .httpStatus(HttpStatus.FOUND)
-//                    .location("/user/login_failed.html")
-//                    .build();
-//        }
-//        return new ResponseBuilder()
-//                .httpVersion(httpRequest.getHttpVersion())
-//                .httpStatus(HttpStatus.FOUND)
-//                .location("/index.html")
-//                .cookie(new Cookie())
-//                .build();
-//    }
-//
-//    private HttpResponse loginByCookie(HttpRequest httpRequest) {
-//        Cookie cookie = new Cookie(httpRequest.get("Cookie"));
-//        return new ResponseBuilder()
-//                .httpVersion(httpRequest.getHttpVersion())
-//                .httpStatus(HttpStatus.FOUND)
-//                .location("/index.html")
-//                .build();
-//    }
 
 }

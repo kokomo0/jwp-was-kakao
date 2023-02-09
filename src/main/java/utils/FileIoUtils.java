@@ -14,7 +14,8 @@ public class FileIoUtils {
     public static boolean exists(String filePath) {
         if (filePath.equals("/"))
             return true;
-        return new File("src/main/resources/templates" + filePath).exists() || new File("src/main/resources/static" + filePath).exists();
+        return new File("src/main/resources/templates" + filePath).exists() ||
+                new File("src/main/resources/static" + filePath).exists();
     }
 
     /**

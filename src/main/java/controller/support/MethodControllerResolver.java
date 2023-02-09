@@ -4,41 +4,34 @@ import controller.*;
 import controller.annotation.RequestMapping;
 import model.User;
 import utils.FileIoUtils;
-import webserver.http.Cookie;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import webserver.http.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static utils.ParsingUtils.parseQueryString;
+import java.util.NoSuchElementException;
 
 public class MethodControllerResolver {
     public HttpResponse process(Controller controller, HttpRequest httpRequest) {
-        Method method = map(controller, httpRequest);
-        return invoke(controller, method, httpRequest);
+        try {
+            Method method = map(controller, httpRequest);
+            return invoke(controller, method, httpRequest);
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
     }
 
-    private Method map(Controller controller, HttpRequest httpRequest) {
-        //TODO: 예외 처리 하기
-//        return Arrays.stream(controller.getClass().getDeclaredMethods())
-//                .filter(method -> method.isAnnotationPresent(RequestMapping.class))
-//                .filter(method -> {
-//                    RequestMapping requestMapping = method.getDeclaredAnnotation(RequestMapping.class);
-//                    return support(requestMapping, httpRequest);
-//                })
-//                .findAny().orElseThrow();
-
-        List<Method> l = Arrays.stream(controller.getClass().getDeclaredMethods())
-                .filter(method -> method.isAnnotationPresent(RequestMapping.class)).collect(Collectors.toList());
-        List<Method> l2 = l.stream().filter(method -> {
-            RequestMapping requestMapping = method.getDeclaredAnnotation(RequestMapping.class);
-            return support(requestMapping, httpRequest);
-        }).collect(Collectors.toList());
-
-        return l2.stream().findAny().orElseThrow();
+    /**
+     * @throws NoSuchElementException: 매핑하려 Method가 존재하지 않을 경우 발생하는 예외 (orElseThrow()에서 던진다)
+     */
+    private Method map(Controller controller, HttpRequest httpRequest) throws NoSuchElementException {
+        return Arrays.stream(controller.getClass().getDeclaredMethods())
+                .filter(method -> method.isAnnotationPresent(RequestMapping.class))
+                .filter(method -> {
+                    RequestMapping requestMapping = method.getDeclaredAnnotation(RequestMapping.class);
+                    return support(requestMapping, httpRequest);
+                })
+                .findAny().orElseThrow();
     }
 
     private boolean support(RequestMapping requestMapping, HttpRequest httpRequest) {
@@ -51,38 +44,38 @@ public class MethodControllerResolver {
         return httpRequest.getMethod().equals("GET") && FileIoUtils.exists(httpRequest.getUri());
     }
 
-    private HttpResponse invoke(Controller controller, Method method, HttpRequest httpRequest) {
-        //TODO: 예외 처리 하기
-        try {
-            if (controller.equals(HomeController.getInstance()))
-                return (HttpResponse) method.invoke(controller);
+    /**
+     * @throws InvocationTargetException: method에서 예외가 발생할 경우 던지는 예외 (method.invoke()에서 던진다)
+     * @throws IllegalAccessException:    method에 접근할 수 없을 때 발생하는 예외 (method.invoke()에서 던진다)
+     */
+    private HttpResponse invoke(Controller controller, Method method, HttpRequest httpRequest) throws InvocationTargetException, IllegalAccessException {
+        if (controller.equals(HomeController.getInstance()))
+            return (HttpResponse) method.invoke(controller);
+        //TODO: 파라미터 정리
 
-            if (controller.equals(ResourceController.getInstance()))
-                return (HttpResponse) method.invoke(controller, httpRequest.getUri());
+        if (controller.equals(ResourceController.getInstance()))
+            return (HttpResponse) method.invoke(controller, httpRequest.getUri());
 
-            if (controller.equals(UserController.getInstance())) {
-                //TODO: 파싱 로직 이동할 것
-                Parameter params = ParameterWrapper.wrap(httpRequest);
-                User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-                return (HttpResponse) method.invoke(controller, user);
-            }
-            if (controller.equals(LoginController.getInstance())) {
-                Parameter params = ParameterWrapper.wrap(httpRequest);
-                params.add("uri", httpRequest.getUri());
-                if (httpRequest.hasCookie())
-                    params.add("JSESSIONID", Cookie.parseCookie(httpRequest.get("Cookie")).get("JSESSIONID"));
-                return (HttpResponse) method.invoke(controller, params);
-            }
-            if (controller.equals(UserListController.getInstance())) {
-                Parameter params = new Parameter();
-                params.add("uri", httpRequest.getUri());
-                if (httpRequest.hasCookie())
-                    params.add("JSESSIONID", Cookie.parseCookie(httpRequest.get("Cookie")).get("JSESSIONID"));
-                return (HttpResponse) method.invoke(controller, params);
-            }
-        } catch (Exception e) {
+        if (controller.equals(UserController.getInstance())) {
+            Parameter params = ParameterWrapper.wrap(httpRequest);
+            User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+            return (HttpResponse) method.invoke(controller, user);
         }
-        return HomeController.getInstance().badRequest();
+        if (controller.equals(LoginController.getInstance())) {
+            Parameter params = ParameterWrapper.wrap(httpRequest);
+            params.add("uri", httpRequest.getUri());
+            if (httpRequest.hasCookie())
+                params.add("JSESSIONID", Cookie.parseCookie(httpRequest.get("Cookie")).get("JSESSIONID"));
+            return (HttpResponse) method.invoke(controller, params);
+        }
+        if (controller.equals(UserListController.getInstance())) {
+            Parameter params = new Parameter();
+            params.add("uri", httpRequest.getUri());
+            if (httpRequest.hasCookie())
+                params.add("JSESSIONID", Cookie.parseCookie(httpRequest.get("Cookie")).get("JSESSIONID"));
+            return (HttpResponse) method.invoke(controller, params);
+        }
+        return new ResponseBuilder().httpStatus(HttpStatus.OK).build();
     }
 
 }
