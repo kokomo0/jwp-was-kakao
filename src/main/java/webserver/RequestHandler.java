@@ -1,7 +1,6 @@
 package webserver;
 
-import controller.Controller;
-import controller.Resolver;
+import controller.resolver.MethodControllerResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.IOUtils;
@@ -10,8 +9,6 @@ import webserver.http.HttpResponse;
 
 import java.io.*;
 import java.net.Socket;
-
-import static utils.FileIoUtils.exists;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -36,24 +33,9 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private Controller mapController(String uri) {
-        return handlerMapping.getController("hello");
-//        if (uri.equals("/user/list")) {
-//            return handlerMapping.getController("list");
-//        }
-//        if (exists(uri)) {
-//            return handlerMapping.getController("resource");
-//        }
-//        if (uri.startsWith("/user/create"))
-//            return handlerMapping.getController("user");
-//        return handlerMapping.getController("login");
-    }
-
     private HttpResponse process(HttpRequest httpRequest) {
-        String uri = httpRequest.getUri();
-        Controller controller = mapController(uri);
-        Resolver resolver = new Resolver();
-        return resolver.process(controller, httpRequest);
+        MethodControllerResolver resolver = new MethodControllerResolver();
+        return resolver.process(handlerMapping.map(httpRequest), httpRequest);
     }
 
 }

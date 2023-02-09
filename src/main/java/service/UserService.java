@@ -20,4 +20,16 @@ public class UserService {
         DataBase.addUser(user);
         return user;
     }
+
+    public void add(User user) {
+        DataBase.addUser(user);
+    }
+
+    public boolean isExistingUser(String id) {
+        return DataBase.findUserById(id) != null;
+    }
+
+    public boolean isValidPassword(String userId, String password) {
+        return DataBase.findUserById(userId).getPassword().equals(password);
+    }
 }

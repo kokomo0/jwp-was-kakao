@@ -1,6 +1,6 @@
 package controller;
 
-import webserver.http.HttpRequest;
+import controller.annotation.RequestMapping;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.http.ResponseBuilder;
@@ -18,7 +18,7 @@ public class HomeController implements Controller {
     }
 
     @RequestMapping
-    public HttpResponse hello(HttpRequest httpRequest) {
+    public HttpResponse hello() {
         return new ResponseBuilder()
                 .httpStatus(HttpStatus.OK)
                 .contentType("text/plain")
@@ -27,13 +27,10 @@ public class HomeController implements Controller {
     }
 
     public HttpResponse badRequest() {
+        //TODO: 예외 따로 처리하기
         return new ResponseBuilder()
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
     }
 
-
-    public HttpResponse handleRequest(HttpRequest httpRequest) {
-        return new ResponseBuilder().build();
-    }
 }

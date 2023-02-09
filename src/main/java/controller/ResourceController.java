@@ -1,7 +1,7 @@
 package controller;
 
+import controller.annotation.RequestMapping;
 import utils.FileIoUtils;
-import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.http.ResponseBuilder;
@@ -20,14 +20,14 @@ public class ResourceController implements Controller {
         return instance;
     }
 
-    public HttpResponse handleRequest(HttpRequest httpRequest) {
+    @RequestMapping
+    public HttpResponse viewPage(String uri) {
+        //TODO: CONTENT-TYPE 정리
         try {
-            byte[] body = FileIoUtils.mapBody(httpRequest.getUri());
+            byte[] body = FileIoUtils.mapBody(uri);
             return new ResponseBuilder()
-                    .httpVersion(httpRequest.getHttpVersion())
                     .httpStatus(HttpStatus.OK)
-                    .contentType(FileIoUtils.getContentType(httpRequest.getUri()))
-                    .contentLength(String.valueOf(body.length))
+                    .contentType(FileIoUtils.getContentType(uri))
                     .body(body)
                     .build();
         } catch (IOException e) {
