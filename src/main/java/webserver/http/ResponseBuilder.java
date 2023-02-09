@@ -3,7 +3,7 @@ package webserver.http;
 import java.util.stream.Collectors;
 
 public class ResponseBuilder {
-    private String httpVersion;
+    private String httpVersion = "HTTP/1.1";
     private HttpStatus httpStatus;
     private String contentType;
     private String contentLength;
@@ -53,6 +53,13 @@ public class ResponseBuilder {
 
     public ResponseBuilder body(byte[] body) {
         this.body = body;
+        this.contentLength = String.valueOf(body.length);
+        return this;
+    }
+
+    public ResponseBuilder redirect(String location) {
+        this.httpStatus = HttpStatus.FOUND;
+        this.location = location;
         return this;
     }
 

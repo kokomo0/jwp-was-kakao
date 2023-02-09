@@ -12,8 +12,9 @@ public class HandlerMapping {
         controllers = new HashMap<>() {{
             put("user", UserController.getInstance());
             put("resource", ResourceController.getInstance());
-            put("login", LoginController.getInstance());
-            put("list", UserListController.getInstance());
+            //put("login", LoginController.getInstance());
+            //put("list", UserListController.getInstance());
+            put("hello", HomeController.getInstance());
         }};
     }
 
