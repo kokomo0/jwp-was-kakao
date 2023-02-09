@@ -5,7 +5,7 @@ import webserver.http.HttpRequest;
 public class ParameterWrapper {
     public static Parameter wrap(HttpRequest request) {
         String query = getQuery(request);
-        if (query == null) return null;
+        if (query == null) return new Parameter();
         return new Parameter(query);
     }
 

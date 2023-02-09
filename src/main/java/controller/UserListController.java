@@ -41,37 +41,4 @@ public class UserListController implements Controller {
             return new ResponseBuilder().httpStatus(HttpStatus.INTERNET_SERVER_ERROR).build();
         }
     }
-//
-//    public HttpResponse handleRequest(HttpRequest httpRequest) {
-//        String cookie = httpRequest.get("Cookie");
-//        if("".equals(cookie)||!httpRequest.get("Cookie").contains("logined=true")) {
-//            return new ResponseBuilder()
-//                    .httpVersion(httpRequest.getHttpVersion())
-//                    .httpStatus(HttpStatus.FOUND)
-//                    .location("/user/login.html")
-//                    .build();
-//        }
-//        return new ResponseBuilder()
-//                .httpVersion(httpRequest.getHttpVersion())
-//                .httpStatus(HttpStatus.OK)
-//                .build();
-//
-//        try {
-//            TemplateLoader loader = new ClassPathTemplateLoader();
-//            loader.setPrefix("/templates");
-//            loader.setSuffix(".html");
-//            Handlebars handlebars = new Handlebars(loader);
-//            Template template = handlebars.compile("user/list");
-//
-//            String profilePage = template.apply(DataBase.findAll());
-//
-//            return new ResponseBuilder()
-//                    .httpVersion(httpRequest.getHttpVersion())
-//                    .httpStatus(HttpStatus.OK)
-//                    .body(profilePage.getBytes())
-//                    .build();
-//        } catch(IOException e) {
-//            return new ResponseBuilder().httpStatus(HttpStatus.INTERNET_SERVER_ERROR).build();
-//        }
-//    }
 }

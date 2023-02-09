@@ -7,6 +7,7 @@ import service.LoginService;
 import service.UserService;
 import session.Session;
 import session.SessionManager;
+import utils.FileIoUtils;
 import webserver.http.*;
 
 import java.util.Map;
@@ -39,6 +40,26 @@ public class LoginController implements Controller {
                 .cookie(Cookie.setCookie(sessionId))
                 .redirect("/index.html")
                 .build();
+    }
+
+    @RequestMapping(path = "/user/login", method = "GET")
+    public HttpResponse accessLoginPage(Parameter parameter) {
+        if(parameter == null || "".equals(parameter.get("JSESSIONID"))) {
+            try {
+                byte[] body = FileIoUtils.mapBody(parameter.get("uri"));
+                return new ResponseBuilder()
+                        .httpStatus(HttpStatus.OK)
+                        .contentType(FileIoUtils.getContentType(parameter.get("uri")))
+                        .body(body)
+                        .build();
+            } catch (Exception e) {
+                return new ResponseBuilder().httpStatus(HttpStatus.INTERNET_SERVER_ERROR).build();
+            }
+        }
+        return new ResponseBuilder()
+                .redirect("/index.html")
+                .build();
+
     }
 
 
