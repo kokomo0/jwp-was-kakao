@@ -16,7 +16,7 @@ public class HandlerMapping {
             put("user", UserController.getInstance());
             put("resource", ResourceController.getInstance());
             put("login", LoginController.getInstance());
-            //put("list", UserListController.getInstance());
+            put("list", UserListController.getInstance());
             put("home", HomeController.getInstance());
         }};
     }
@@ -25,7 +25,7 @@ public class HandlerMapping {
         String uri = httpRequest.getUri();
         if (uri.startsWith("/user/create"))
             return controllers.get("user");
-        if (uri.startsWith("/user/login"))
+        if (uri.equals("/user/login"))
             return controllers.get("login");
         if (uri.startsWith("/user/list"))
             return controllers.get("list");

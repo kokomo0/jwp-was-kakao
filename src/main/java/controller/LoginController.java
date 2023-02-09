@@ -41,6 +41,7 @@ public class LoginController implements Controller {
                 .build();
     }
 
+
     private boolean isLoginUser(HttpRequest request) {
         if (!request.hasCookie())
             return false;

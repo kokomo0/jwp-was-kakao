@@ -3,10 +3,7 @@ package controller;
 import controller.annotation.RequestMapping;
 import model.User;
 import service.UserService;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
-import webserver.http.HttpStatus;
-import webserver.http.ResponseBuilder;
+import webserver.http.*;
 
 import java.util.Map;
 

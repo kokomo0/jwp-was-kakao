@@ -71,7 +71,7 @@ public class ResponseBuilder {
                 + (connection != null ? ("Connection: " + connection + " \r\n") : "")
                 + (location != null ? ("Location: " + location + " \r\n") : "")
                 + (cookie != null ? (String.join("\r\n",
-                cookie.getCookies().entrySet().stream()
+                cookie.getAllCookies().entrySet().stream()
                         .map(e -> "Set-Cookie: " + e.getKey() + "=" + e.getValue())
                         .collect(Collectors.toList())) + "\r\n") : "");
 

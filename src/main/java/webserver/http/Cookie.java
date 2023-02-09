@@ -7,26 +7,38 @@ import java.util.UUID;
 
 public class Cookie {
 
-    private final Map<String, String> cookies = new HashMap<>();
+    private Map<String, String> cookies;
 
-    public Cookie() {
-        cookies.put("JSESSIONID", UUID.randomUUID().toString());
+    private Cookie(Map<String, String> cookies) {
+        this.cookies = cookies;
+    }
+
+    public static Cookie setCookie(String uuid) {
+        Map<String, String> cookies = new HashMap<>();
+        cookies.put("JSESSIONID", uuid);
         cookies.put("Path", "/");
         cookies.put("Max-Age", "60");
-        cookies.put("logined", "true");
+        return new Cookie(cookies);
     }
 
-    public Cookie(String cookieString) {
-        parseAndSetCookie(cookieString);
-    }
 
-    private void parseAndSetCookie(String query) {
+//    public Cookie(String cookieString) {
+//        parseAndSetCookie(cookieString);
+//    }
+
+    public static Cookie parseCookie(String query) {
+        Map<String, String> cookies = new HashMap<>();
         Arrays.stream(query.split(";"))
                 .map(e -> e.trim().split("="))
                 .forEach(e -> cookies.put(e[0].trim(), e[1].trim()));
+        return new Cookie(cookies);
     }
 
-    public Map<String,String> getCookies() {
+    public String get(String key) {
+        return cookies.getOrDefault(key, "");
+    }
+
+    public Map<String, String> getAllCookies() {
         return cookies;
     }
 }

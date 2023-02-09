@@ -4,6 +4,7 @@ import controller.*;
 import controller.annotation.RequestMapping;
 import model.User;
 import utils.FileIoUtils;
+import webserver.http.Cookie;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
@@ -55,6 +56,13 @@ public class MethodControllerResolver {
             }
             if (controller.equals(LoginController.getInstance())) {
                 Parameter params = ParameterWrapper.wrap(httpRequest);
+                return (HttpResponse) method.invoke(controller, params);
+            }
+            if (controller.equals(UserListController.getInstance())) {
+                Parameter params = new Parameter();
+                params.add("uri", httpRequest.getUri());
+                if(httpRequest.hasCookie())
+                    params.add("JSESSIONID", Cookie.parseCookie(httpRequest.get("Cookie")).get("JSESSIONID"));
                 return (HttpResponse) method.invoke(controller, params);
             }
         } catch (Exception e) {
