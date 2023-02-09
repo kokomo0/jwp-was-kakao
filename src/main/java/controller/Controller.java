@@ -5,7 +5,7 @@ import webserver.session.SessionManager;
 
 public interface Controller {
     default boolean isLoginUser(String sessionId) {
-        if (sessionId.isEmpty() || sessionId == null) {
+        if (sessionId == null || sessionId.isEmpty()) {
             return false;
         }
         Session session = SessionManager.getInstance().findSession(sessionId);

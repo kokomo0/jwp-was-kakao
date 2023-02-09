@@ -3,6 +3,7 @@ package service;
 import db.DataBase;
 import model.User;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class UserService {
@@ -31,5 +32,9 @@ public class UserService {
 
     public boolean isValidPassword(String userId, String password) {
         return DataBase.findUserById(userId).getPassword().equals(password);
+    }
+
+    public Collection<User> getAllUsers() {
+        return DataBase.findAll();
     }
 }
