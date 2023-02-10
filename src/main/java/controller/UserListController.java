@@ -15,7 +15,6 @@ import webserver.http.ResponseBuilder;
 import java.io.IOException;
 
 public class UserListController implements Controller {
-    private final UserService userService = UserService.getInstance();
     private UserListController() {
     }
 
@@ -40,7 +39,7 @@ public class UserListController implements Controller {
         loader.setSuffix(".html");
         Handlebars handlebars = new Handlebars(loader);
         Template template = handlebars.compile("user/list");
-        String users = template.apply(userService.getAllUsers());
+        String users = template.apply(UserService.getInstance().getAllUsers());
 
         return new ResponseBuilder()
                 .httpStatus(HttpStatus.OK)

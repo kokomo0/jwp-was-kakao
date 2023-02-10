@@ -6,7 +6,6 @@ import support.Parameter;
 import webserver.http.*;
 
 public class UserCreateController implements Controller {
-    private final UserService userService = UserService.getInstance();
 
     private UserCreateController() {
     }
@@ -21,7 +20,7 @@ public class UserCreateController implements Controller {
 
     @RequestMapping(path = "/user/create", method = "POST")
     public HttpResponse createUserByPost(Parameter parameter) {
-        userService.createUser(parameter);
+        UserService.getInstance().createUser(parameter);
         return new ResponseBuilder()
                 .redirect("/index.html")
                 .build();
@@ -29,7 +28,7 @@ public class UserCreateController implements Controller {
 
     @RequestMapping(path = "/user/create", method = "GET")
     public HttpResponse createUserByGet(Parameter parameter) {
-        userService.createUser(parameter);
+        UserService.getInstance().createUser(parameter);
         return new ResponseBuilder()
                 .redirect("/index.html")
                 .build();

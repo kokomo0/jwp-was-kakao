@@ -31,6 +31,8 @@ public class HandlerMapping {
             return controllers.get("list");
         if (!uri.equals("/") && exists(uri))
             return controllers.get("resource");
-        return controllers.get("home");
+        if (uri.equals("/"))
+            return controllers.get("home");
+        return null;
     }
 }

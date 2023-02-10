@@ -11,20 +11,26 @@ import java.util.NoSuchElementException;
 
 public class ExceptionHandler {
     public static HttpResponse handleException(Exception e) {
-        if (e.equals(NoSuchElementException.class)) {
+        if (e instanceof InvocationTargetException) {
+            return handleException((Exception) ((InvocationTargetException) e).getTargetException());
+        }
+        if (e instanceof NoSuchElementException) {
             return new ResponseBuilder().httpStatus(HttpStatus.NOT_FOUND).build();
         }
-        if (e.equals(IOException.class)) {
+        if (e instanceof NullPointerException) {
+            return new ResponseBuilder().httpStatus(HttpStatus.NOT_FOUND).build();
+        }
+        if (e instanceof IOException) {
             return new ResponseBuilder().httpStatus(HttpStatus.INTERNET_SERVER_ERROR).build();
         }
-        if (e.equals(URISyntaxException.class)) {
+        if (e instanceof URISyntaxException) {
             return new ResponseBuilder().httpStatus(HttpStatus.BAD_REQUEST).build();
         }
-        if (e.equals(InvocationTargetException.class)) {
+        if (e instanceof IllegalAccessException) {
             return new ResponseBuilder().httpStatus(HttpStatus.INTERNET_SERVER_ERROR).build();
         }
-        if (e.equals(IllegalAccessException.class)) {
-            return new ResponseBuilder().httpStatus(HttpStatus.INTERNET_SERVER_ERROR).build();
+        if (e instanceof IllegalArgumentException) {
+            return new ResponseBuilder().httpStatus(HttpStatus.BAD_REQUEST).build();
         }
         return new ResponseBuilder().httpStatus(HttpStatus.UNKNOWN_ERROR).build();
     }

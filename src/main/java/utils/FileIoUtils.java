@@ -14,8 +14,8 @@ public class FileIoUtils {
     public static boolean exists(String filePath) {
         if (filePath.equals("/"))
             return true;
-        return new File("src/main/resources/templates" + filePath).exists() ||
-                new File("src/main/resources/static" + filePath).exists();
+        return new File("src/main/resources/templates" + filePath).isFile() ||
+                new File("src/main/resources/static" + filePath).isFile();
     }
 
     /**
@@ -28,7 +28,7 @@ public class FileIoUtils {
         return Files.readAllBytes(path);
     }
 
-    public static byte[] mapBody(String path) throws IOException, URISyntaxException {
+    public static byte[] mapBody(String path) throws IOException, URISyntaxException, NullPointerException {
         if (path.endsWith("html")) {
             return FileIoUtils.loadFileFromClasspath("templates" + path);
         }
