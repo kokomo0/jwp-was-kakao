@@ -1,5 +1,6 @@
 package webserver;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import support.StubSocket;
 import utils.FileIoUtils;
@@ -60,8 +61,8 @@ class RequestHandlerTest {
     }
 
     @Test
-    void css() throws IOException, URISyntaxException{
-    // given
+    void css() throws IOException, URISyntaxException {
+        // given
         final String httpRequest = String.join("\r\n",
                 "GET /css/styles.css HTTP/1.1 ",
                 "Host: localhost:8080 ",
@@ -85,9 +86,29 @@ class RequestHandlerTest {
         assertThat(socket.output()).isEqualTo(expected);
     }
 
+    @DisplayName("요청에 해당하는 핸들러가 없다")
     @Test
-    void notFoundRequest() {
-        //요청 uri에 해당하는 소스가 없다
+    void notSupportRequest() {
+        // given
+        final String httpRequest = String.join("\r\n",
+                "DELETE /index.html HTTP/1.1 ",
+                "Host: localhost:8080 ",
+                "Connection: keep-alive ",
+                "",
+                "");
+
+        final var socket = new StubSocket(httpRequest);
+        final RequestHandler handler = new RequestHandler(socket);
+
+        // when
+        handler.run();
+        List<String> response = Arrays.asList(socket.output().split("\r\n"));
+        assertThat(response.get(0)).isEqualTo("HTTP/1.1 404 Not Found ");
+    }
+
+    @DisplayName("요청 path에 해당하는 소스가 없다")
+    @Test
+    void notExistPath() {
         // given
         final String httpRequest = String.join("\r\n",
                 "GET /abcd HTTP/1.1 ",
@@ -104,4 +125,5 @@ class RequestHandlerTest {
         List<String> response = Arrays.asList(socket.output().split("\r\n"));
         assertThat(response.get(0)).isEqualTo("HTTP/1.1 404 Not Found ");
     }
+
 }

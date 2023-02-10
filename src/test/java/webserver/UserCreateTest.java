@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserTest {
+public class UserCreateTest {
     @DisplayName("GET 방식으로 유저를 생성한다")
     @Test
     void createUserByGet() {
@@ -39,7 +39,7 @@ public class UserTest {
                 "POST /user/create HTTP/1.1\n" +
                         "Host: localhost:8080\n" +
                         "Connection: keep-alive\n" +
-                        "Content-Length: 59\n" +
+                        "Content-Length: 92\n" +
                         "Content-Type: application/x-www-form-urlencoded\n" +
                         "Accept: */*\n" +
                         "\n" +
@@ -55,48 +55,43 @@ public class UserTest {
         assertThat(DataBase.findUserById("cu").getPassword()).isEqualTo("password");
     }
 
+    @DisplayName("쿼리문 형식이 이상하다")
     @Test
-    void loginSuccess() {
-        createUserByGet();
-        String httpRequest = String.join("\r\n",
-                "POST /user/login HTTP/1.1\r\n" +
-                        "Referer: http://localhost:8080/user/login.html\r\n" +
-                        "Origin: http://localhost:8080\r\n" +
-                        "Content-Type: application/x-www-form-urlencoded\r\n" +
-                        "Content-Length: 28\r\n" +
-                        "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" +
-                        "\r\n" +
-                        "userId=cu&password=password");
+    void badQuery() {
+        // given
+        final String httpRequest = String.join("\r\n",
+                "GET /user/create?userId=1&password=&name==&&&email= HTTP/1.1 ",
+                "Host: localhost:8080 ",
+                "Connection: keep-alive ",
+                "",
+                "");
+
         final var socket = new StubSocket(httpRequest);
         final RequestHandler handler = new RequestHandler(socket);
 
+        // when
         handler.run();
         List<String> response = Arrays.asList(socket.output().split("\r\n"));
-        assertThat(response.get(0)).isEqualTo("HTTP/1.1 302 Found ");
-        assertThat(response.stream().filter(s -> s.contains("Location")).findAny().get()).isEqualTo("Location: /index.html ");
+        assertThat(response.get(0)).isEqualTo("HTTP/1.1 400 Bad Request ");
     }
 
+    @DisplayName("유저를 만드는데 필요한 파라미터가 다 들어오지 않았다")
     @Test
-    void loginFailed() {
-        createUserByGet();
-        String httpRequest = String.join("\r\n",
-                "POST /user/login HTTP/1.1\r\n" +
-                        "Referer: http://localhost:8080/user/login.html\r\n" +
-                        "Origin: http://localhost:8080\r\n" +
-                        "Content-Type: application/x-www-form-urlencoded\r\n" +
-                        "Content-Length: 28\r\n" +
-                        "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" +
-                        "\r\n" +
-                        "userId=cu&password=password123");
+    void badParameter() {
+        // given
+        final String httpRequest = String.join("\r\n",
+                "GET /user/create?userId=a&password=123&qwer=asdf&zxcv=uiop HTTP/1.1 ",
+                "Host: localhost:8080 ",
+                "Connection: keep-alive ",
+                "",
+                "");
+
         final var socket = new StubSocket(httpRequest);
         final RequestHandler handler = new RequestHandler(socket);
 
+        // when
         handler.run();
         List<String> response = Arrays.asList(socket.output().split("\r\n"));
-        assertThat(response.get(0)).isEqualTo("HTTP/1.1 302 Found ");
-        assertThat(response.stream().filter(s -> s.contains("Location")).findAny().get()).isEqualTo("Location: /user/login_failed.html ");
-
+        assertThat(response.get(0)).isEqualTo("HTTP/1.1 400 Bad Request ");
     }
-
-
 }
