@@ -17,6 +17,7 @@ public class ResourceController implements Controller {
     public static ResourceController getInstance() {
         return LazyHolder.it;
     }
+
     private static class LazyHolder {
         private static final ResourceController it = new ResourceController();
     }

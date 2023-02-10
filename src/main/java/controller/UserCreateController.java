@@ -6,7 +6,6 @@ import support.Parameter;
 import webserver.http.*;
 
 public class UserCreateController implements Controller {
-
     private UserCreateController() {
     }
 

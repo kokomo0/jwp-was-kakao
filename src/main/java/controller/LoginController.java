@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class LoginController implements Controller {
-    private final UserService userService = UserService.getInstance();
-
     private LoginController() {
     }
 
@@ -56,7 +54,7 @@ public class LoginController implements Controller {
     }
 
     private boolean valid(String userId, String password) {
-        return userService.isExistingUser(userId) &&
-                userService.isValidPassword(userId, password);
+        return UserService.getInstance().isExistingUser(userId) &&
+                UserService.getInstance().isValidPassword(userId, password);
     }
 }

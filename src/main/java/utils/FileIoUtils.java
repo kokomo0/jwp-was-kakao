@@ -19,8 +19,8 @@ public class FileIoUtils {
     }
 
     /**
-     * @throws IOException: Files.readAllBytes()에서 발생할 수 있는 IO 예외
-     * @throws URISyntaxException: URI.toURI() 실행 시 uri가 제대로 전달되지 않았다면 발생하는 있는 예외
+     * @throws IOException:          Files.readAllBytes()에서 발생할 수 있는 IO 예외
+     * @throws URISyntaxException:   URI.toURI() 실행 시 uri가 제대로 전달되지 않았다면 발생하는 있는 예외
      * @throws NullPointerException: URL.getResource() 실행 시 파일이 존재하지 않는다면 발생하는 예외
      */
     public static byte[] loadFileFromClasspath(String filePath) throws IOException, URISyntaxException, NullPointerException {
