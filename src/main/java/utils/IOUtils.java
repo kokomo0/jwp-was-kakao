@@ -29,7 +29,7 @@ public class IOUtils {
     private static List<String> readRequestHeader(BufferedReader br) throws IOException {
         List<String> requestHeader = new ArrayList<>();
         String line = br.readLine();
-        while (!"".equals(line) || line == null) {
+        while (line == null || !"".equals(line)) {
             requestHeader.add(line);
             line = br.readLine();
         }
@@ -37,10 +37,11 @@ public class IOUtils {
     }
 
     /**
-     * @throws IOException:           bufferReader.read(), readeline()에서 발생할 수 있는 IO 예외
-     * @throws NumberFormatException: Content-Length의 값이 정수가 아닐 경우 발생할 수 있는 예외
+     * @throws IOException:               bufferReader.read(), readeline()에서 발생할 수 있는 IO 예외
+     * @throws NumberFormatException:     Content-Length의 값이 정수가 아닐 경우 발생할 수 있는 예외
+     * @throws IndexOutOfBoundsException: 헤더 형식이 맞지 않을 경우 발생할 수 있는 예외 parseHeader에서 던짐
      */
-    public static HttpRequest readRequest(BufferedReader br) throws IOException, NumberFormatException {
+    public static HttpRequest readRequest(BufferedReader br) throws IOException, NumberFormatException, IndexOutOfBoundsException {
         List<String> rawHeader = readRequestHeader(br);
         String[] requestLine = rawHeader.get(0).split(" ");
         Map<String, String> headers = parseHeader(rawHeader);

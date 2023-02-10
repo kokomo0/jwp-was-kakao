@@ -23,7 +23,6 @@ public class ResourceController implements Controller {
 
     @RequestMapping
     public HttpResponse viewPage(Parameter parameter) throws IOException, URISyntaxException {
-        //TODO: CONTENT-TYPE 정리
         byte[] body = FileIoUtils.mapBody(parameter.get("uri"));
         return new ResponseBuilder()
                 .httpStatus(HttpStatus.OK)
