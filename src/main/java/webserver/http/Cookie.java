@@ -7,6 +7,8 @@ import java.util.Map;
 public class Cookie {
 
     public static final String SESSION_ID = "JSESSIONID";
+    public static final String COOOKIES_DELIMITER = ";";
+    public static final String KEY_VALUE_DELIMITER = "=";
     private final Map<String, String> cookies;
 
     private Cookie(Map<String, String> cookies) {
@@ -21,10 +23,10 @@ public class Cookie {
         return new Cookie(cookies);
     }
 
-    public static Cookie parseCookie(String query) {
+    public static Cookie parseCookie(String query) throws IndexOutOfBoundsException {
         Map<String, String> cookies = new HashMap<>();
-        Arrays.stream(query.split(";"))
-                .map(e -> e.trim().split("="))
+        Arrays.stream(query.split(COOOKIES_DELIMITER))
+                .map(e -> e.trim().split(KEY_VALUE_DELIMITER))
                 .forEach(e -> cookies.put(e[0].trim(), e[1].trim()));
         return new Cookie(cookies);
     }

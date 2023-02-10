@@ -1,30 +1,29 @@
 package support;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static webserver.http.Cookie.SESSION_ID;
 
 public class Parameter {
-    private Map<String, String> parameter = new HashMap<>();
+    private Map<String, String> parameter;
 
-    public Parameter() {}
+    public Parameter() {
+        parameter = new HashMap<>();
+    }
 
-    public Parameter(String query) {
-        Arrays.stream(query.split("&")).forEach(param -> {
-            String[] kv = param.split("=");
-            parameter.put(kv[0].trim(), kv[1].trim());
-        });
+    public Parameter(Map<String, String> parameter) {
+        this.parameter = parameter;
     }
 
     public String get(String key) {
-        return parameter.getOrDefault(key, "");
+        return parameter.get(key);
     }
 
     public void add(Map<String, String> extraParameter) {
         parameter.putAll(extraParameter);
     }
+
     public void add(String key, String value) {
         parameter.put(key, value);
     }
