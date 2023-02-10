@@ -88,9 +88,9 @@ userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor
 ### 1. 로그인 기능 구현
 - [x] “로그인” 메뉴를 클릭하면 http://localhost:8080/user/login.html 으로 이동해 로그인할 수 있다.
 - [x] 로그인이 성공하면 index.html로 이동하고, 로그인이 실패하면 /user/login_failed.html로 이동해야 한다.
-- [ ] 회원가입한 사용자로 로그인할 수 있어야 한다.
-- [ ] 자바 진영에서 세션 아이디를 전달하는 이름으로 JSESSIONID를 사용한다.
-- [ ]서버에서 HTTP 응답을 전달할 때 응답 헤더에 Set-Cookie를 추가하고 JSESSIONID=656cef62-e3c4-40bc-a8df-94732920ed46 형태로 값을 전달하면 클라이언트 요청 헤더의 Cookie 필드에 값이 추가된다.
+- [x] 회원가입한 사용자로 로그인할 수 있어야 한다.
+- [x] 자바 진영에서 세션 아이디를 전달하는 이름으로 JSESSIONID를 사용한다.
+- [x]서버에서 HTTP 응답을 전달할 때 응답 헤더에 Set-Cookie를 추가하고 JSESSIONID=656cef62-e3c4-40bc-a8df-94732920ed46 형태로 값을 전달하면 클라이언트 요청 헤더의 Cookie 필드에 값이 추가된다.
 ```
 * 서버로부터 쿠키 설정된 클라이언트의 HTTP Request Header 예
 
@@ -101,7 +101,7 @@ Accept: */*
 Cookie: JSESSIONID=656cef62-e3c4-40bc-a8df-94732920ed46; Path=/
 ```
 
-- [ ] Cookie 클래스를 추가하고 HTTP Request Header의 Cookie에 JSESSIONID가 없으면 HTTP Response Header에 Set-Cookie를 반환해주는 기능을 구현한다.
+- [x] Cookie 클래스를 추가하고 HTTP Request Header의 Cookie에 JSESSIONID가 없으면 HTTP Response Header에 Set-Cookie를 반환해주는 기능을 구현한다.
 ```
 HTTP/1.1 200 OK
 Set-Cookie: JSESSIONID=656cef62-e3c4-40bc-a8df-94732920ed46
@@ -110,10 +110,10 @@ Content-Type: text/html;charset=utf-8;
 ```
 
 ### 2. 템플릿 엔진 활용하기
-- [ ] 접근하고 있는 사용자가 “로그인” 상태일 경우(Cookie 값이 logined=true) 경우 http://localhost:8080/user/list 로 접근했을 때 사용자 목록을 출력한다. 만약 로그인하지 않은 상태라면 로그인 페이지(login.html)로 이동한다.
-- [ ] 동적으로 html을 생성하기 위해 handlebars.java template engine을 활용한다.
+- [x] 접근하고 있는 사용자가 “로그인” 상태일 경우(Cookie 값이 logined=true) 경우 http://localhost:8080/user/list 로 접근했을 때 사용자 목록을 출력한다. 만약 로그인하지 않은 상태라면 로그인 페이지(login.html)로 이동한다.
+- [x] 동적으로 html을 생성하기 위해 handlebars.java template engine을 활용한다.
 
 ### 3. Session 구현하기
-- [ ] 쿠키에서 전달 받은 JSESSIONID의 값으로 로그인 여부를 체크할 수 있어야 한다.
-- [ ] 로그인에 성공하면 Session 객체의 값으로  User 객체를 저장해보자.
-- [ ] 로그인된 상태에서 /user/login 페이지에 HTTP GET method로 접근하면 이미 로그인한 상태니 index.html 페이지로 리다이렉트 처리한다.
+- [x] 쿠키에서 전달 받은 JSESSIONID의 값으로 로그인 여부를 체크할 수 있어야 한다.
+- [x] 로그인에 성공하면 Session 객체의 값으로  User 객체를 저장해보자.
+- [x] 로그인된 상태에서 /user/login 페이지에 HTTP GET method로 접근하면 이미 로그인한 상태니 index.html 페이지로 리다이렉트 처리한다.
