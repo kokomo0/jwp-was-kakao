@@ -3,9 +3,10 @@ package webserver.http;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class Cookie {
-
+    public static final String COOKIE_PATTERN = "[^=;]+=[^=;]+(;[^=]+=[^=;]+)*";
     public static final String SESSION_ID = "JSESSIONID";
     public static final String COOOKIES_DELIMITER = ";";
     public static final String KEY_VALUE_DELIMITER = "=";
@@ -23,7 +24,13 @@ public class Cookie {
         return new Cookie(cookies);
     }
 
-    public static Cookie parseCookie(String query) throws IndexOutOfBoundsException {
+    /**
+     * @throws IllegalArgumentException: 쿠키의 형식이 표현식을 만족하지 않을 경우 예외를 던진다.
+     */
+    public static Cookie parseCookie(String query) throws IllegalArgumentException {
+        if(!Pattern.matches(COOKIE_PATTERN, query)) {
+            throw new IllegalArgumentException();
+        }
         Map<String, String> cookies = new HashMap<>();
         Arrays.stream(query.split(COOOKIES_DELIMITER))
                 .map(e -> e.trim().split(KEY_VALUE_DELIMITER))
