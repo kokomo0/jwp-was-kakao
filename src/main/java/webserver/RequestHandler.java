@@ -28,7 +28,7 @@ public class RequestHandler implements Runnable {
             HttpResponse httpResponse = process(httpRequest);
             IOUtils.writeResponse(new DataOutputStream(out), httpResponse);
 
-        } catch (IOException | NumberFormatException | NullPointerException | IndexOutOfBoundsException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }

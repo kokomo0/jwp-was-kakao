@@ -15,6 +15,9 @@ import webserver.http.ResponseBuilder;
 import java.io.IOException;
 
 public class UserListController implements Controller {
+    public static String successUri = "user/list";
+    public static String failUri = "/user/login.html";
+
     private UserListController() {
     }
 
@@ -30,7 +33,7 @@ public class UserListController implements Controller {
     public HttpResponse showUserList(Parameter parameter) throws IOException {
         if (!isLoginUser(parameter.sessionId())) {
             return new ResponseBuilder()
-                    .redirect("/user/login.html")
+                    .redirect(failUri)
                     .build();
         }
 
@@ -38,7 +41,7 @@ public class UserListController implements Controller {
         loader.setPrefix("/templates");
         loader.setSuffix(".html");
         Handlebars handlebars = new Handlebars(loader);
-        Template template = handlebars.compile("user/list");
+        Template template = handlebars.compile(successUri);
         String users = template.apply(UserService.getInstance().getAllUsers());
 
         return new ResponseBuilder()

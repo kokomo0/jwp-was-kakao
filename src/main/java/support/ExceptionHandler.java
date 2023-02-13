@@ -10,9 +10,9 @@ import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 
 public class ExceptionHandler {
-    public static HttpResponse handleException(Exception e) {
+    public static HttpResponse handleException(Exception e, String failUrl) {
         if (e instanceof InvocationTargetException) {
-            return handleException((Exception) ((InvocationTargetException) e).getTargetException());
+            return handleException((Exception) ((InvocationTargetException) e).getTargetException(), failUrl);
         }
         if (e instanceof NoSuchElementException) {
             return new ResponseBuilder().httpStatus(HttpStatus.NOT_FOUND).build();
@@ -30,7 +30,7 @@ public class ExceptionHandler {
             return new ResponseBuilder().httpStatus(HttpStatus.INTERNET_SERVER_ERROR).build();
         }
         if (e instanceof IllegalArgumentException) {
-            return new ResponseBuilder().httpStatus(HttpStatus.BAD_REQUEST).build();
+            return new ResponseBuilder().redirect(failUrl).build();
         }
         return new ResponseBuilder().httpStatus(HttpStatus.UNKNOWN_ERROR).build();
     }

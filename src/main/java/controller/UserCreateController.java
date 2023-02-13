@@ -6,6 +6,9 @@ import support.Parameter;
 import webserver.http.*;
 
 public class UserCreateController implements Controller {
+    public static String successUri = "/index.html";
+    public static String failUri = "/user/form.html";
+
     private UserCreateController() {
     }
 
@@ -21,7 +24,7 @@ public class UserCreateController implements Controller {
     public HttpResponse createUserByPost(Parameter parameter) {
         UserService.getInstance().createUser(parameter);
         return new ResponseBuilder()
-                .redirect("/index.html")
+                .redirect(successUri)
                 .build();
     }
 
@@ -29,7 +32,7 @@ public class UserCreateController implements Controller {
     public HttpResponse createUserByGet(Parameter parameter) {
         UserService.getInstance().createUser(parameter);
         return new ResponseBuilder()
-                .redirect("/index.html")
+                .redirect(successUri)
                 .build();
     }
 }

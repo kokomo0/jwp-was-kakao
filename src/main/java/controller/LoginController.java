@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class LoginController implements Controller {
+    public static String successUri = "/index.html";
+    public static String failUri = "/user/login_failed.html";
+
     private LoginController() {
     }
 
@@ -26,7 +29,7 @@ public class LoginController implements Controller {
     public HttpResponse signIn(Parameter parameter) {
         if (!valid(parameter.get("userId"), parameter.get("password"))) {
             return new ResponseBuilder()
-                    .redirect("/user/login_failed.html")
+                    .redirect(failUri)
                     .build();
         }
         String sessionId = SessionManager.getInstance().createSession();
@@ -34,7 +37,7 @@ public class LoginController implements Controller {
 
         return new ResponseBuilder()
                 .cookie(Cookie.setCookie(sessionId))
-                .redirect("/index.html")
+                .redirect(successUri)
                 .build();
     }
 
@@ -49,7 +52,7 @@ public class LoginController implements Controller {
                     .build();
         }
         return new ResponseBuilder()
-                .redirect("/index.html")
+                .redirect(successUri)
                 .build();
     }
 

@@ -18,7 +18,12 @@ public class MethodControllerResolver {
             Method method = map(controller, httpRequest);
             return invoke(controller, method, httpRequest);
         } catch (Exception e) {
-            return ExceptionHandler.handleException(e);
+            try {
+                String failUri = (String) controller.getClass().getField("failUri").get(String.class);
+                return ExceptionHandler.handleException(e, failUri);
+            } catch (NullPointerException | IllegalAccessException | NoSuchFieldException noneE) {
+                return ExceptionHandler.handleException(e, "");
+            }
         }
     }
 
@@ -52,12 +57,10 @@ public class MethodControllerResolver {
     private HttpResponse invoke(Controller controller, Method method, HttpRequest httpRequest) throws InvocationTargetException, IllegalAccessException {
         if (controller.equals(HomeController.getInstance()))
             return (HttpResponse) method.invoke(controller);
-
         Parameter parameter = ParameterWrapper.wrap(httpRequest);
         parameter.add("uri", httpRequest.getUri());
         if (httpRequest.hasCookie())
             parameter.add(SESSION_ID, Cookie.parseCookie(httpRequest.get("Cookie")).get(SESSION_ID));
-
         return (HttpResponse) method.invoke(controller, parameter);
     }
 }

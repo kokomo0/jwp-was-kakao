@@ -81,6 +81,22 @@ public class LoginTest {
         assertThat(response.stream().filter(s -> s.contains("JSESSIONID")).collect(Collectors.toList())).hasSize(0);
     }
 
+    @DisplayName("로그인에 필요한 파라미터가 다 들어오지 않았다")
+    @Test
+    void loginFailedIncompleteQuery() {
+        String httpRequest = postRequest +
+                "Content-Length: 30\r\n\r\n" +
+                "userId=kayla&password=";
+        final var socket = new StubSocket(httpRequest);
+        final RequestHandler handler = new RequestHandler(socket);
+
+        handler.run();
+        List<String> response = Arrays.asList(socket.output().split("\r\n"));
+        assertThat(response.get(0)).isEqualTo("HTTP/1.1 302 Found ");
+        assertThat(response.stream().filter(s -> s.contains("Location")).findAny().get()).isEqualTo("Location: /user/login_failed.html ");
+        assertThat(response.stream().filter(s -> s.contains("JSESSIONID")).collect(Collectors.toList())).hasSize(0);
+    }
+
     @DisplayName("로그인하여 쿠키를 발급 받을 경우, 로그인 페이지를 누르면 index.html로 돌아간다")
     @Test
     void isLoginUser() {
@@ -172,7 +188,6 @@ public class LoginTest {
         List<String> response = Arrays.asList(socket.output().split("\r\n"));
         assertThat(response.get(0)).isEqualTo("HTTP/1.1 302 Found ");
         assertThat(response.stream().filter(s -> s.contains("Location")).findAny().get()).isEqualTo("Location: /user/login.html ");
-
     }
 
 

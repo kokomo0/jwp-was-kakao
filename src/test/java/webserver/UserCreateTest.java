@@ -72,7 +72,9 @@ public class UserCreateTest {
         // when
         handler.run();
         List<String> response = Arrays.asList(socket.output().split("\r\n"));
-        assertThat(response.get(0)).isEqualTo("HTTP/1.1 400 Bad Request ");
+        assertThat(response.get(0)).isEqualTo("HTTP/1.1 302 Found ");
+        assertThat(response.stream().filter(s -> s.contains("Location")).findAny().get()).isEqualTo("Location: /user/form.html ");
+
     }
 
     @DisplayName("유저를 만드는데 필요한 파라미터가 다 들어오지 않았다")
@@ -92,6 +94,8 @@ public class UserCreateTest {
         // when
         handler.run();
         List<String> response = Arrays.asList(socket.output().split("\r\n"));
-        assertThat(response.get(0)).isEqualTo("HTTP/1.1 400 Bad Request ");
+        assertThat(response.get(0)).isEqualTo("HTTP/1.1 302 Found ");
+        assertThat(response.stream().filter(s -> s.contains("Location")).findAny().get()).isEqualTo("Location: /user/form.html ");
+
     }
 }
